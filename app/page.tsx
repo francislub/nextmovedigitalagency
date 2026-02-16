@@ -5,7 +5,6 @@ import { PortfolioSection } from '@/components/PortfolioSection'
 import { StatsSection } from '@/components/StatsSection'
 import { TeamSection } from '@/components/TeamSection'
 import { TestimonialCarousel } from '@/components/TestimonialCarousel'
-import { ContactForm } from '@/components/ContactForm'
 import { Footer } from '@/components/Footer'
 
 export default function Home() {
@@ -29,14 +28,9 @@ export default function Home() {
       {/* Team Section */}
       <TeamSection />
 
-      {/* Testimonials Section */}
-      <TestimonialCarousel />
-
-      {/* Contact Form Section */}
-      <ContactForm />
-
-      {/* Footer */}
+       {/* Footer */}
       <Footer />
+
     </main>
   )
 }
