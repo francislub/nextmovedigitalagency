@@ -48,7 +48,7 @@ export function Navbar() {
       ],
     },
     { label: 'About', href: '/about' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Contact', href: '/contact' },
   ]
 
   return (
@@ -61,13 +61,34 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
+          {/* Logo - Left Side */}
           <Link
             href="/"
-            className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            className="flex items-center hover:opacity-80 transition-opacity flex-shrink-0"
           >
-            <span className="text-3xl">💲</span>
-            <span>NextMove</span>
+            {/* Desktop Logo */}
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light%20logo.PNG-L4l5jPjuxEh0ftGgNvXNyRYaJtQiWi.png"
+              alt="NextMove Digital Agency"
+              className="hidden dark:hidden h-12 w-auto"
+            />
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dark%20logo.PNG-vRmoIBwttWTPF9VFfDkLauaHxbeqeZ.png"
+              alt="NextMove Digital Agency"
+              className="hidden dark:block h-12 w-auto"
+            />
+            
+            {/* Mobile Logo */}
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light%20icon%20for%20small%20devices.PNG-wMLPf9LoTvc3hucHPJaJDCzXWPeWjI.png"
+              alt="NextMove"
+              className="md:hidden dark:hidden h-10 w-auto"
+            />
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dark%20icon%20for%20small%20devices.PNG-RZ3u2iC4yaUHYws7lCqrOX7gMniTiT.png"
+              alt="NextMove"
+              className="md:hidden dark:block h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -119,7 +140,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <ThemeToggle />
             <Link
-              href="#contact"
+              href="/contact"
               className="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105"
             >
               Get Started
@@ -199,7 +220,7 @@ export function Navbar() {
                 
                 {/* CTA Button */}
                 <Link
-                  href="#contact"
+                  href="/contact"
                   className="px-6 py-3 mx-0 mt-6 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg text-center hover:shadow-lg shadow-primary/30 transition-all duration-300 transform hover:scale-105 w-full animate-slideInUp"
                   onClick={() => setIsOpen(false)}
                   style={{ animationDelay: `${navLinks.length * 50}ms` }}

@@ -28,10 +28,18 @@ export function Footer() {
           <div>
             <Link
               href="/"
-              className="flex items-center gap-2 text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4 hover:opacity-80 transition-opacity"
+              className="flex items-center hover:opacity-80 transition-opacity mb-4 flex-shrink-0"
             >
-              <span className="text-3xl">💲</span>
-              <span>NextMove</span>
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light%20logo.PNG-L4l5jPjuxEh0ftGgNvXNyRYaJtQiWi.png"
+                alt="NextMove Digital Agency"
+                className="hidden dark:hidden h-14 w-auto"
+              />
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dark%20logo.PNG-vRmoIBwttWTPF9VFfDkLauaHxbeqeZ.png"
+                alt="NextMove Digital Agency"
+                className="hidden dark:block h-14 w-auto"
+              />
             </Link>
             <p className="text-foreground/60 text-sm leading-relaxed mb-6">
               Helping local businesses turn online visibility into real customers and revenue.
@@ -124,12 +132,21 @@ export function Footer() {
                 </div>
               </li>
               <li>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-1">
                   <Mail size={16} className="text-primary flex-shrink-0" />
                   <a href="mailto:hello@nextmove.digital" className="text-primary hover:text-secondary transition-colors text-sm">
                     hello@nextmove.digital
                   </a>
                 </div>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors font-medium text-sm group"
+                >
+                  Contact Us
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
               </li>
             </ul>
           </div>
