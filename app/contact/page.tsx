@@ -50,12 +50,12 @@ export default function ContactPage() {
       value: 'hello@nextmove.digital',
       href: 'mailto:hello@nextmove.digital',
     },
-    {
-      icon: MapPin,
-      label: 'Location',
-      value: '123 Digital Street, Tech City, TC 12345',
-      href: '#',
-    },
+    // {
+    //   icon: MapPin,
+    //   label: 'Location',
+    //   value: '123 Digital Street, Tech City, TC 12345',
+    //   href: '#',
+    // },
     {
       icon: Clock,
       label: 'Business Hours',

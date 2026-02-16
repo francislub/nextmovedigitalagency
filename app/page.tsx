@@ -3,7 +3,6 @@ import { Hero } from '@/components/Hero'
 import { ServicesGrid } from '@/components/ServicesGrid'
 import { PortfolioSection } from '@/components/PortfolioSection'
 import { StatsSection } from '@/components/StatsSection'
-import { TeamSection } from '@/components/TeamSection'
 import { TestimonialCarousel } from '@/components/TestimonialCarousel'
 import { Footer } from '@/components/Footer'
 
@@ -24,9 +23,6 @@ export default function Home() {
 
       {/* Stats Section */}
       <StatsSection />
-
-      {/* Team Section */}
-      <TeamSection />
 
        {/* Footer */}
       <Footer />

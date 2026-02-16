@@ -67,7 +67,7 @@ export function Hero() {
               }`}
             >
               <Link
-                href="#contact"
+                href="/contact"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 group w-full sm:w-auto"
               >
                 Get Started
@@ -77,9 +77,9 @@ export function Hero() {
                 />
               </Link>
 
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-all duration-300 w-full sm:w-auto">
+              <Link href="/all" className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-all duration-300 w-full sm:w-auto">
                 View Our Work
-              </button>
+              </Link>
             </div>
 
             {/* Stats */}
@@ -89,8 +89,8 @@ export function Hero() {
               }`}
             >
               {[
-                { number: "50+", label: "Projects Delivered" },
-                { number: "15+", label: "Years Experience" },
+                { number: "20+", label: "Projects Delivered" },
+                { number: "3+", label: "Years Experience" },
                 { number: "99%", label: "Client Satisfaction" },
               ].map((stat, index) => (
                 <div

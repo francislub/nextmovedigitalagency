@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CheckCircle2, Award, Zap, Target } from 'lucide-react'
+import { TeamSection } from '@/components/TeamSection'
 
 export default function AboutPage() {
   const values = [
@@ -110,6 +111,10 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Team Section */}
+      <TeamSection />
+
 
       <Footer />
     </main>
