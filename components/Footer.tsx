@@ -30,13 +30,16 @@ export function Footer() {
               href="/"
               className="flex items-center hover:opacity-80 transition-opacity mb-4 flex-shrink-0"
             >
+              {/* Light Theme Logo */}
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/light%20logo.PNG-L4l5jPjuxEh0ftGgNvXNyRYaJtQiWi.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
                 alt="NextMove Digital Agency"
                 className="hidden dark:hidden h-14 w-auto"
               />
+              
+              {/* Dark Theme Logo */}
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dark%20logo.PNG-vRmoIBwttWTPF9VFfDkLauaHxbeqeZ.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
                 alt="NextMove Digital Agency"
                 className="hidden dark:block h-14 w-auto"
               />
