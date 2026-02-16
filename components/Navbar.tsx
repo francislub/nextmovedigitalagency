@@ -24,18 +24,18 @@ export function Navbar() {
       label: "Services",
       href: "/services",
       submenu: [
-        { label: "Web Design", href: "/services#web-design" },
-        { label: "Brand Building", href: "/services#branding" },
-        { label: "Content Creation", href: "/services#content" },
-        { label: "Social Media", href: "/services#social" },
+        { label: "Web Design", href: "/web-design" },
+        { label: "Brand Building", href: "/branding" },
+        { label: "Content Creation", href: "/content" },
+        { label: "Social Media", href: "/social" },
       ],
     },
     {
       label: "Portfolio",
       href: "/portfolio",
       submenu: [
-        { label: "Case Studies", href: "/portfolio#cases" },
-        { label: "All Projects", href: "/portfolio#all" },
+        { label: "Case Studies", href: "/cases" },
+        { label: "All Projects", href: "/all" },
       ],
     },
     {
@@ -43,8 +43,8 @@ export function Navbar() {
       href: "#",
       submenu: [
         { label: "Blog", href: "/blog" },
-        { label: "Free Consultation", href: "#contact" },
-        { label: "Website Audit", href: "#" },
+        { label: "Free Consultation", href: "/contact" },
+        { label: "Website Audit", href: "/audit" },
       ],
     },
     { label: "About", href: "/about" },
