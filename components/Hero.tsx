@@ -147,13 +147,14 @@ export function Hero() {
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 <div className="text-center space-y-6">
                   <div className="relative inline-block">
-                    <div
+                    {/* <div
                       className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-full blur-xl opacity-40 animate-pulse"
                       style={{ animationDuration: "3s" }}
                     />
                     <div className="relative bg-gradient-to-br from-primary/10 to-secondary/10 p-8 rounded-full backdrop-blur-sm border border-primary/20">
                       <Sparkles size={80} className="text-primary animate-float" />
-                    </div>
+                    </div> */}
+
                   </div>
 
                   <div className="space-y-2">

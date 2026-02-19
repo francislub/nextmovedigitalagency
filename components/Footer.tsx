@@ -151,7 +151,7 @@ export function Footer() {
                   href="mailto:hello@nextmove.digital"
                   className="text-primary hover:text-secondary transition-colors"
                 >
-                  lubanjwafrancispro@gmail.com
+                   info@nextmovedigitalagency.com
                 </a>
               </li>
             </ul>
