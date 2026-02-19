@@ -6,7 +6,7 @@ import { Linkedin, Twitter, Mail } from 'lucide-react'
 const teamMembers = [
   {
     id: 1,
-    name: 'Sarah Johnson',
+    name: 'Troy Moses',
     role: 'Creative Director',
     bio: 'Design visionary with 10+ years of experience',
     gradient: 'from-blue-500 to-purple-500',
@@ -14,7 +14,7 @@ const teamMembers = [
   },
   {
     id: 2,
-    name: 'Michael Chen',
+    name: 'Troy Moses',
     role: 'Lead Developer',
     bio: 'Full-stack expert building scalable solutions',
     gradient: 'from-green-500 to-teal-500',
@@ -22,7 +22,7 @@ const teamMembers = [
   },
   {
     id: 3,
-    name: 'Emma Davis',
+    name: 'Troy Moses',
     role: 'Growth Strategist',
     bio: 'Data-driven marketer scaling businesses',
     gradient: 'from-pink-500 to-orange-500',
@@ -30,7 +30,7 @@ const teamMembers = [
   },
   {
     id: 4,
-    name: 'James Wilson',
+    name: 'Troy Moses',
     role: 'Content Lead',
     bio: 'Storyteller turning insights into action',
     gradient: 'from-indigo-500 to-blue-500',
