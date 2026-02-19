@@ -14,7 +14,6 @@ export function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -62,17 +61,13 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
 
-          {/* LOGO (THEME-BASED, ONE AT A TIME) */}
+          {/* LOGO */}
           <Link href="/" className="flex items-center flex-shrink-0">
-
-            {/* LIGHT THEME LOGO */}
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
               alt="NextMove Digital"
               className="block dark:hidden h-12 w-auto"
             />
-
-            {/* DARK THEME LOGO */}
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
               alt="NextMove Digital"
@@ -105,12 +100,12 @@ export function Navbar() {
                 </Link>
 
                 {link.submenu && (
-                  <div className="absolute left-0 mt-1 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="absolute left-0 mt-1 w-52 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                     {link.submenu.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="block px-4 py-2 text-sm text-foreground/80 hover:text-primary hover:bg-secondary/10 transition"
+                        className="block px-4 py-2 text-sm hover:text-primary hover:bg-secondary/10 transition"
                       >
                         {item.label}
                       </Link>
@@ -128,7 +123,7 @@ export function Navbar() {
               href="/contact"
               className="px-6 py-2.5 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg transition"
             >
-              Get Started
+               Get Started
             </Link>
           </div>
 
@@ -136,18 +131,34 @@ export function Navbar() {
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen(true)}
               className="p-2 rounded-lg hover:bg-secondary/10"
             >
-              {isOpen ? <X /> : <Menu />}
+              <Menu />
             </button>
           </div>
         </div>
+      </div>
 
-        {/* MOBILE MENU */}
-        {isOpen && (
-          <div className="md:hidden fixed inset-x-0 top-20 bg-background border-b border-border z-40">
-            <div className="p-4 space-y-2">
+      {/* MOBILE SIDEBAR (LEFT) */}
+      {isOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setIsOpen(false)}
+          />
+
+          {/* Sidebar */}
+          <div className="fixed top-0 left-0 h-full w-72 bg-background border-r border-border z-50 p-4 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <span className="font-bold text-lg">⚡ Tech Menu</span>
+              <button onClick={() => setIsOpen(false)}>
+                <X />
+              </button>
+            </div>
+
+            <div className="space-y-2">
               {navLinks.map((link) => (
                 <div key={link.label}>
                   <button
@@ -158,7 +169,7 @@ export function Navbar() {
                           )
                         : setIsOpen(false)
                     }
-                    className="w-full flex justify-between items-center px-4 py-3 text-left font-semibold hover:bg-secondary/10 rounded-lg"
+                    className="w-full flex justify-between items-center px-4 py-3 font-semibold hover:bg-secondary/10 rounded-lg"
                   >
                     {link.label}
                     {link.submenu && (
@@ -177,7 +188,7 @@ export function Navbar() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setIsOpen(false)}
-                          className="block px-3 py-2 text-sm text-foreground/70 hover:text-primary"
+                          className="block px-3 py-2 text-sm hover:text-primary"
                         >
                           {item.label}
                         </Link>
@@ -192,12 +203,12 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="block mt-4 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold text-center rounded-lg"
               >
-                Get Started
+                 Get Started 🚀
               </Link>
             </div>
           </div>
-        )}
-      </div>
+        </>
+      )}
     </nav>
   )
 }
