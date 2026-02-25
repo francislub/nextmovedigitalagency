@@ -64,12 +64,12 @@ export function Navbar() {
           {/* LOGO */}
           <Link href="/" className="flex items-center flex-shrink-0">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
+              src="/images/white.png"
               alt="NextMove Digital"
               className="block dark:hidden h-12 w-auto"
             />
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
+              src="/images/black.png"
               alt="NextMove Digital"
               className="hidden dark:block h-12 w-auto"
             />
