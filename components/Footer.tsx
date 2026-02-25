@@ -42,14 +42,14 @@ export function Footer() {
             >
               {/* LIGHT THEME LOGO */}
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
+                src="/images/white.png"
                 alt="NextMove Digital Agency"
                 className="block dark:hidden h-14 w-auto"
               />
 
               {/* DARK THEME LOGO */}
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
+                src="/images/black.png"
                 alt="NextMove Digital Agency"
                 className="hidden dark:block h-14 w-auto"
               />
