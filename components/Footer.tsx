@@ -38,20 +38,20 @@ export function Footer() {
           <div>
             <Link
               href="/"
-              className="flex items-center hover:opacity-80 transition-opacity mb-4"
+              className="flex items-center hover:opacity-80 transition-opacity mb-2"
             >
               {/* LIGHT THEME LOGO */}
               <img
                 src="https://n1wg6ajce9.ufs.sh/f/1ViPlEv28IBa8XMiDFNTdk2N39jnyHRpPov4guOVBFQEIelU"
                 alt="NextMove Digital Agency"
-                className="block dark:hidden h-14 w-auto"
+                className="block dark:hidden h-15 w-auto"
               />
 
               {/* DARK THEME LOGO */}
               <img
                 src="https://n1wg6ajce9.ufs.sh/f/1ViPlEv28IBaxvw8yhnzBis7fnDZjOIew9Qq02t4cPYyUJHT"
                 alt="NextMove Digital Agency"
-                className="hidden dark:block h-14 w-auto"
+                className="hidden dark:block h-15 w-auto"
               />
             </Link>
 
