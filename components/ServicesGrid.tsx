@@ -80,14 +80,20 @@ export function ServicesGrid() {
   }, [])
 
   return (
-    <section id="services" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-background to-secondary/5">
+    <section
+      id="services"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-background to-secondary/5 font-mono"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Our <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Services</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 uppercase">
+            Our{' '}
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Services
+            </span>
           </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/60 max-w-2xl mx-auto tracking-wide">
             Comprehensive digital solutions designed to help your business grow
           </p>
         </div>
@@ -115,10 +121,10 @@ export function ServicesGrid() {
                 }}
               >
                 {/* Card Background Gradient */}
-                <div 
+                <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300"
                   style={{
-                    background: `linear-gradient(to bottom right, var(--primary), var(--secondary))`
+                    background: `linear-gradient(to bottom right, var(--primary), var(--secondary))`,
                   }}
                 />
 
@@ -126,24 +132,24 @@ export function ServicesGrid() {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300" />
 
                 {/* Card Content */}
-                <div className="relative h-full p-8 rounded-2xl border border-border/50 group-hover:border-primary/30 bg-card/50 backdrop-blur-sm transition-all duration-300">
+                <div className="relative h-full p-8 rounded-2xl border border-border/50 group-hover:border-primary/40 bg-card/50 backdrop-blur-sm transition-all duration-300">
                   {/* Icon */}
-                  <div 
+                  <div
                     className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br p-3 mb-5 group-hover:scale-110 transition-transform duration-300"
                     style={{
-                      background: `linear-gradient(to bottom right, hsl(var(--primary)), hsl(var(--secondary)))`
+                      background: `linear-gradient(to bottom right, hsl(var(--primary)), hsl(var(--secondary)))`,
                     }}
                   >
                     <Icon size={28} className="text-white" />
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold mb-3 tracking-wide uppercase group-hover:text-primary transition-colors">
                     {service.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-foreground/60 mb-6 leading-relaxed">
+                  <p className="text-foreground/60 mb-6 leading-relaxed tracking-wide">
                     {service.description}
                   </p>
 
@@ -152,7 +158,7 @@ export function ServicesGrid() {
                     {service.features.map((feature) => (
                       <li
                         key={feature}
-                        className="flex items-center gap-2 text-sm text-foreground/70"
+                        className="flex items-center gap-2 text-sm text-foreground/70 tracking-wide"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-primary to-secondary" />
                         {feature}
@@ -161,7 +167,7 @@ export function ServicesGrid() {
                   </ul>
 
                   {/* CTA */}
-                  <button className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all duration-300">
+                  <button className="inline-flex items-center gap-2 text-primary font-semibold tracking-widest uppercase hover:gap-3 transition-all duration-300">
                     Learn More
                     <span className="opacity-0 group-hover:opacity-100 transition-opacity">
                       →

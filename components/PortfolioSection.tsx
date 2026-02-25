@@ -81,15 +81,21 @@ export function PortfolioSection() {
   }, [])
 
   return (
-    <section id="portfolio" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-secondary/5 via-background to-background">
+    <section
+      id="portfolio"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-secondary/5 via-background to-background font-mono"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Our <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Success Stories</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight uppercase mb-4">
+            Our{' '}
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Success Stories
+            </span>
           </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
-            Real results from real clients. See how we've transformed businesses
+          <p className="text-lg text-foreground/60 max-w-2xl mx-auto tracking-wide">
+            Real results from real clients. See how we&apos;ve transformed businesses
           </p>
         </div>
 
@@ -130,7 +136,7 @@ export function PortfolioSection() {
                 <div className="relative h-80 p-8 flex flex-col justify-between">
                   {/* Category Badge */}
                   <div className="flex justify-between items-start">
-                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold text-white">
+                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold uppercase tracking-wider text-white">
                       {item.category}
                     </span>
                     <ExternalLink
@@ -144,7 +150,7 @@ export function PortfolioSection() {
                     {/* Metrics */}
                     <div className="mb-4 h-8 overflow-hidden">
                       <div
-                        className={`text-white text-sm font-bold transition-transform duration-300 ${
+                        className={`text-white text-sm font-bold tracking-widest transition-transform duration-300 ${
                           hoveredId === item.id ? 'translate-y-0' : 'translate-y-full'
                         }`}
                       >
@@ -153,10 +159,10 @@ export function PortfolioSection() {
                     </div>
 
                     {/* Title & Description */}
-                    <h3 className="text-2xl font-bold text-white mb-2">
+                    <h3 className="text-2xl font-bold uppercase tracking-wide text-white mb-2">
                       {item.title}
                     </h3>
-                    <p className="text-white/80 text-sm line-clamp-2">
+                    <p className="text-white/80 text-sm tracking-wide line-clamp-2">
                       {item.description}
                     </p>
 
@@ -179,9 +185,12 @@ export function PortfolioSection() {
 
         {/* View All CTA */}
         <div className="text-center mt-16">
-          <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-xl hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 group">
+          <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold uppercase tracking-widest rounded-xl hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 group">
             View All Projects
-            <ArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            <ArrowUpRight
+              size={20}
+              className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+            />
           </button>
         </div>
       </div>

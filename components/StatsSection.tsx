@@ -46,7 +46,10 @@ function Counter({ target, symbol }: { target: number; symbol: string }) {
   }, [target, count])
 
   return (
-    <div ref={elementRef} className="text-5xl md:text-6xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+    <div
+      ref={elementRef}
+      className="text-5xl md:text-6xl font-black tracking-widest bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-mono"
+    >
       {count}
       <span className="text-4xl md:text-5xl">{symbol}</span>
     </div>
@@ -55,14 +58,17 @@ function Counter({ target, symbol }: { target: number; symbol: string }) {
 
 export function StatsSection() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 font-mono">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            By The <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Numbers</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold uppercase tracking-tight mb-4">
+            By The{' '}
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Numbers
+            </span>
           </h2>
-          <p className="text-lg text-foreground/60 max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/60 max-w-2xl mx-auto tracking-wide">
             Our impact speaks for itself
           </p>
         </div>
@@ -83,7 +89,7 @@ export function StatsSection() {
               <Counter target={stat.number} symbol={stat.symbol} />
 
               {/* Label */}
-              <p className="text-foreground/70 font-semibold mt-4 group-hover:text-primary transition-colors">
+              <p className="text-foreground/70 font-semibold uppercase tracking-wider mt-4 group-hover:text-primary transition-colors">
                 {stat.label}
               </p>
             </div>
