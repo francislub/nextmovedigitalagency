@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-import { Instagram, Facebook, Linkedin, Youtube, TikTok, Calendar, MessageSquare } from 'lucide-react'
+import { Instagram, Facebook, Linkedin, Youtube, Calendar, MessageSquare } from 'lucide-react'
 import { useState } from 'react'
 
 export default function SocialMediaPage() {
@@ -78,7 +78,7 @@ export default function SocialMediaPage() {
               <Facebook size={32} className="text-blue-600" />
               <Linkedin size={32} className="text-blue-500" />
               <Youtube size={32} className="text-red-600" />
-              <TikTok size={32} className="text-black" />
+              {/* <TikTok size={32} className="text-black" /> */}
             </div>
           </div>
         </div>

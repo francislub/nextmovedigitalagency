@@ -10,6 +10,7 @@ import {
   Facebook,
   Instagram,
   Send,
+  // TikTok,
 } from "lucide-react"
 import { useState } from "react"
 
@@ -67,6 +68,8 @@ export function Footer() {
                 { icon: Twitter, href: "#", label: "Twitter" },
                 { icon: Facebook, href: "#", label: "Facebook" },
                 { icon: Instagram, href: "#", label: "Instagram" },
+                // { icon: TikTok, href: "#", label: "TikTok" },
+                
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
