@@ -41,14 +41,14 @@ export default function ContactPage() {
     {
       icon: Phone,
       label: 'Phone',
-      value: '+1 (443) 620-4620',
-      href: 'tel:+14436204620',
+      value: '+256762939942',
+      href: 'tel:+256762939942',
     },
     {
       icon: Mail,
       label: 'Email',
-      value: 'hello@nextmove.digital',
-      href: 'mailto:hello@nextmove.digital',
+      value: 'info@nextmovedigitalagency.com',
+      href: 'mailto:info@nextmovedigitalagency.com',
     },
     {
       icon: Clock,
@@ -140,9 +140,9 @@ export default function ContactPage() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {[
-                    { label: 'Full Name', name: 'name', type: 'text', placeholder: 'John Doe' },
-                    { label: 'Email Address', name: 'email', type: 'email', placeholder: 'john@example.com' },
-                    { label: 'Phone Number', name: 'phone', type: 'tel', placeholder: '+1 (555) 000-0000' },
+                    { label: 'Full Name', name: 'name', type: 'text', placeholder: 'Next Move' },
+                    { label: 'Email Address', name: 'email', type: 'email', placeholder: 'info@nextmovedigitalagency.com' },
+                    { label: 'Phone Number', name: 'phone', type: 'tel', placeholder: '+256762939942' },
                     { label: 'Company Name', name: 'company', type: 'text', placeholder: 'Your Company' },
                   ].map((field) => (
                     <div key={field.name}>

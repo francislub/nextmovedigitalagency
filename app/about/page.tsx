@@ -1,10 +1,12 @@
+'use client'
+
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CheckCircle2, Award, Zap, Target } from 'lucide-react'
 import { TeamSection } from '@/components/TeamSection'
 
 export default function AboutPage() {
-  const values = [
+  const coreValues = [
     {
       icon: Zap,
       title: 'Innovation',
@@ -27,44 +29,83 @@ export default function AboutPage() {
     },
   ]
 
+  const services = [
+    'Web development',
+    'Graphic design',
+    'Content creation',
+    'Social media strategy',
+    'Photography & videography',
+    'Voice-over & digital storytelling',
+    'Lead generation & brand positioning',
+    'Google business profiling',
+  ]
+
+  const targetClients = [
+    'Local small and medium-sized enterprises (SMEs)',
+    'Service-based businesses',
+    'Retail brands',
+    'Professional services (clinics, schools, consultants, etc.)',
+    'Growing start-ups seeking digital structure',
+  ]
+
+  const philosophyPoints = [
+    'Visibility without strategy is noise.',
+    'Branding without systems is decoration.',
+    'Social media without conversion is vanity.',
+    'Growth must be measurable.',
+  ]
+
   return (
-    <main className="min-h-screen bg-background text-foreground font-mono tracking-wide ">
+    <main className="min-h-screen bg-background text-foreground font-mono tracking-wide">
       <Navbar />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-primary/5 to-background">
-        <div className="max-w-4xl mx-auto text-center animate-fadeInUp">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 uppercase tracking-wider">
-            About{' '}
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              NextMove
-            </span>
+        <div className="max-w-5xl mx-auto text-center animate-fadeInUp">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 uppercase tracking-wider bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            About <span className="bg-clip-text text-transparent">NextMove Digital Agency (NMD)</span>
           </h1>
-          <p className="text-xl text-foreground/70 mb-8 leading-relaxed">
-            We're a digital agency passionate about helping local businesses transform their online presence into real revenue.
+          <p className="text-xl text-foreground/70 mb-6 leading-relaxed">
+            “Move Forward, Grow Faster.” – Our slogan captures our mission to empower businesses with measurable digital growth.
+          </p>
+          <p className="text-lg text-foreground/60 leading-relaxed tracking-wide">
+            We are a results-focused digital growth agency dedicated to helping local and emerging businesses make the right next move online. We don’t just design or market; we partner with you to create connected digital systems that attract, engage, and convert customers.
           </p>
         </div>
       </section>
 
-      {/* Mission Section */}
+      {/* Company Overview & Who We Are */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-secondary/5">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           <div className="animate-slideInLeft">
-            <h2 className="text-4xl font-extrabold mb-6 tracking-wider uppercase">
-              Our{' '}
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Mission
-              </span>
+            <h2 className="text-4xl font-extrabold mb-6 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Company Overview
             </h2>
-            <p className="text-lg text-foreground/70 mb-4 leading-relaxed">
-              At NextMove, we believe every local business deserves a strong digital presence. We're here to make that happen through practical, result-focused strategies that turn online visibility into real customers and revenue.
+            <p className="text-lg text-foreground/70 leading-relaxed mb-4">
+              Company Name: <strong>NextMove Digital Agency (NMD)</strong>
             </p>
-            <p className="text-lg text-foreground/70 leading-relaxed">
-              We don't believe in hype or unrealistic promises. We focus on sustainable growth, transparent communication, and delivering measurable results for our clients.
+            <p className="text-lg text-foreground/70 leading-relaxed mb-4">
+              Slogan: <em>“Move Forward, Grow Faster.”</em>
+            </p>
+            <h3 className="text-2xl font-bold mb-3 tracking-wide uppercase text-primary">Who We Are</h3>
+            <p className="text-foreground/70 leading-relaxed mb-4">
+              NextMove Digital Agency is a results-focused digital growth agency dedicated to helping local and emerging businesses make the right next move online. We work with SMEs lacking a strong digital presence and help them transform their brand visibility into measurable growth.
+            </p>
+            <p className="text-foreground/70 leading-relaxed mb-4">
+              Our team combines expertise in:
+            </p>
+            <ul className="list-disc list-inside text-foreground/60 mb-4">
+              {services.map((service, i) => (
+                <li key={i}>{service}</li>
+              ))}
+            </ul>
+            <p className="text-foreground/70 leading-relaxed">
+              Together, we create connected digital systems that help businesses attract, engage, and convert customers.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 animate-slideInRight">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 gap-6 animate-slideInRight">
             {[
               { value: '150+', label: 'Projects Completed', color: 'text-primary' },
               { value: '98%', label: 'Client Satisfaction', color: 'text-secondary' },
@@ -85,29 +126,65 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Mission & Vision */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-extrabold mb-4 tracking-wider uppercase">
-              Our{' '}
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Core Values
-              </span>
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+          <div className="animate-slideInLeft">
+            <h2 className="text-4xl font-extrabold mb-6 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Our Mission
             </h2>
-            <p className="text-lg text-foreground/60 tracking-wide">
-              The principles that guide everything we do
+            <p className="text-lg text-foreground/70 leading-relaxed mb-6">
+              To empower local businesses with the digital tools, systems, and strategies they need to grow sustainably in the modern economy.
+            </p>
+
+            <h2 className="text-4xl font-extrabold mb-6 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Our Vision
+            </h2>
+            <p className="text-lg text-foreground/70 leading-relaxed mb-6">
+              To become a leading digital growth partner for businesses across Uganda, East Africa, and Africa, known for clarity, execution, and measurable impact.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
-            {values.map((value, index) => {
+          {/* Philosophy & Core Values */}
+          <div className="animate-slideInRight space-y-6">
+            <h2 className="text-4xl font-extrabold mb-4 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Our Core Philosophy
+            </h2>
+            <ul className="list-disc list-inside text-foreground/60 leading-relaxed space-y-2">
+              {philosophyPoints.map((point, i) => (
+                <li key={i}>{point}</li>
+              ))}
+            </ul>
+
+            <h2 className="text-4xl font-extrabold mt-8 mb-4 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Target Clients
+            </h2>
+            <ul className="list-disc list-inside text-foreground/60 leading-relaxed space-y-2">
+              {targetClients.map((client, i) => (
+                <li key={i}>{client}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Values Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-background to-primary/5">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-extrabold mb-4 tracking-wider uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Our Core Values
+          </h2>
+          <p className="text-lg text-foreground/60 mb-12 tracking-wide">
+            The principles that guide everything we do
+          </p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {coreValues.map((value, index) => {
               const Icon = value.icon
               return (
                 <div
                   key={index}
                   className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 hover:border-primary/30 transition-all duration-300 group hover:scale-105"
-                  style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mb-4 group-hover:rotate-6 transition-transform duration-300">
                     <Icon size={24} className="text-primary-foreground" />
