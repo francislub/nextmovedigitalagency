@@ -28,7 +28,7 @@ export default function AboutPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-background text-foreground font-mono tracking-wide">
+    <main className="min-h-screen bg-background text-foreground font-mono tracking-wide ">
       <Navbar />
 
       {/* Hero Section */}
