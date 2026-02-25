@@ -50,12 +50,6 @@ export default function ContactPage() {
       value: 'hello@nextmove.digital',
       href: 'mailto:hello@nextmove.digital',
     },
-    // {
-    //   icon: MapPin,
-    //   label: 'Location',
-    //   value: '123 Digital Street, Tech City, TC 12345',
-    //   href: '#',
-    // },
     {
       icon: Clock,
       label: 'Business Hours',
@@ -65,7 +59,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground font-mono">
       <Navbar />
 
       {/* Page Header */}
@@ -73,16 +67,19 @@ export default function ContactPage() {
         <div className="absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/5" />
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/8 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
+          <div
+            className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/8 rounded-full blur-3xl animate-float"
+            style={{ animationDelay: '1s' }}
+          />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto animate-fadeInUp">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Let's Work Together
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Let&apos;s Work Together
             </h1>
-            <p className="text-lg text-foreground/70">
-              Ready to transform your business into a digital success story? Get in touch with our team and let's discuss your project.
+            <p className="text-lg text-foreground/70 tracking-wide">
+              Ready to transform your business into a digital success story? Get in touch with our team and let&apos;s discuss your project.
             </p>
           </div>
         </div>
@@ -101,22 +98,22 @@ export default function ContactPage() {
                   className="group bg-card/50 border border-border/50 rounded-2xl p-8 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
                   style={{ animation: `slideUp 0.6s ease-out forwards`, animationDelay: `${index * 100}ms` }}
                 >
-                  <div 
+                  <div
                     className="w-14 h-14 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300"
                     style={{
-                      background: `linear-gradient(to bottom right, hsl(var(--primary)), hsl(var(--secondary)))`
+                      background: `linear-gradient(to bottom right, hsl(var(--primary)), hsl(var(--secondary)))`,
                     }}
                   >
                     <Icon size={24} className="text-primary-foreground" />
                   </div>
 
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold uppercase tracking-wide mb-2 group-hover:text-primary transition-colors">
                     {info.label}
                   </h3>
 
                   <a
                     href={info.href}
-                    className="text-foreground/70 hover:text-primary transition-colors font-medium"
+                    className="text-foreground/70 hover:text-primary transition-colors font-medium tracking-wide"
                   >
                     {info.value}
                   </a>
@@ -128,85 +125,45 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Contact Form */}
             <div className="animate-slideInLeft">
-              <h2 className="text-3xl font-bold mb-8">Send us a Message</h2>
+              <h2 className="text-3xl font-bold uppercase tracking-wide mb-8">Send us a Message</h2>
 
               {submitted ? (
                 <div className="bg-primary/10 border border-primary/30 rounded-2xl p-8 text-center animate-fadeInUp">
                   <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                     <Send className="text-primary-foreground" size={32} />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
-                  <p className="text-foreground/70">
-                    Thank you for reaching out. We'll get back to you within 24 hours.
+                  <h3 className="text-2xl font-bold uppercase tracking-wide mb-2">Message Sent!</h3>
+                  <p className="text-foreground/70 tracking-wide">
+                    Thank you for reaching out. We&apos;ll get back to you within 24 hours.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Name */}
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  {/* Email */}
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-
-                  {/* Phone */}
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
-                      placeholder="+1 (555) 000-0000"
-                    />
-                  </div>
-
-                  {/* Company */}
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
-                      placeholder="Your Company"
-                    />
-                  </div>
+                  {[
+                    { label: 'Full Name', name: 'name', type: 'text', placeholder: 'John Doe' },
+                    { label: 'Email Address', name: 'email', type: 'email', placeholder: 'john@example.com' },
+                    { label: 'Phone Number', name: 'phone', type: 'tel', placeholder: '+1 (555) 000-0000' },
+                    { label: 'Company Name', name: 'company', type: 'text', placeholder: 'Your Company' },
+                  ].map((field) => (
+                    <div key={field.name}>
+                      <label className="block text-sm font-semibold uppercase tracking-wide text-foreground mb-2">
+                        {field.label}
+                      </label>
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        value={(formData as any)[field.name]}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors tracking-wide"
+                        placeholder={field.placeholder}
+                        required={field.name === 'name' || field.name === 'email'}
+                      />
+                    </div>
+                  ))}
 
                   {/* Subject */}
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
+                    <label className="block text-sm font-semibold uppercase tracking-wide text-foreground mb-2">
                       Subject
                     </label>
                     <select
@@ -214,7 +171,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
+                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors tracking-wide"
                     >
                       <option value="">Select a subject</option>
                       <option value="web-design">Web Design</option>
@@ -227,7 +184,7 @@ export default function ContactPage() {
 
                   {/* Message */}
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
+                    <label className="block text-sm font-semibold uppercase tracking-wide text-foreground mb-2">
                       Message
                     </label>
                     <textarea
@@ -236,7 +193,7 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors resize-none"
+                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors resize-none tracking-wide"
                       placeholder="Tell us about your project..."
                     />
                   </div>
@@ -244,7 +201,7 @@ export default function ContactPage() {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                    className="w-full px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold uppercase tracking-widest rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
                   >
                     <Send size={20} />
                     Send Message
@@ -253,36 +210,18 @@ export default function ContactPage() {
               )}
             </div>
 
-            {/* FAQ / Why Contact Us */}
+            {/* Why Choose Us */}
             <div className="animate-slideInRight">
-              <h2 className="text-3xl font-bold mb-8">Why Choose Us?</h2>
+              <h2 className="text-3xl font-bold uppercase tracking-wide mb-8">Why Choose Us?</h2>
 
               <div className="space-y-6">
                 {[
-                  {
-                    title: 'Expert Team',
-                    description: 'Our team of specialists brings years of experience in digital transformation.',
-                  },
-                  {
-                    title: 'Fast Response',
-                    description: 'We typically respond to inquiries within 24 hours to keep your project moving.',
-                  },
-                  {
-                    title: 'Custom Solutions',
-                    description: 'Every business is unique. We tailor our services to your specific needs and goals.',
-                  },
-                  {
-                    title: 'Proven Results',
-                    description: 'Our clients see an average of 3x growth in online engagement within 6 months.',
-                  },
-                  {
-                    title: 'Transparent Communication',
-                    description: 'You\'ll always know what\'s happening with detailed progress reports and updates.',
-                  },
-                  {
-                    title: 'Ongoing Support',
-                    description: 'Your success doesn\'t end at launch. We provide continuous optimization and support.',
-                  },
+                  { title: 'Expert Team', description: 'Our team of specialists brings years of experience in digital transformation.' },
+                  { title: 'Fast Response', description: 'We typically respond to inquiries within 24 hours to keep your project moving.' },
+                  { title: 'Custom Solutions', description: 'Every business is unique. We tailor our services to your specific needs and goals.' },
+                  { title: 'Proven Results', description: 'Our clients see an average of 3x growth in online engagement within 6 months.' },
+                  { title: 'Transparent Communication', description: "You'll always know what's happening with detailed progress reports and updates." },
+                  { title: 'Ongoing Support', description: "Your success doesn't end at launch. We provide continuous optimization and support." },
                 ].map((item, index) => (
                   <div
                     key={item.title}
@@ -294,10 +233,10 @@ export default function ContactPage() {
                         <MessageSquare size={16} />
                       </div>
                       <div>
-                        <h3 className="font-bold mb-1 group-hover:text-primary transition-colors">
+                        <h3 className="font-bold uppercase tracking-wide mb-1 group-hover:text-primary transition-colors">
                           {item.title}
                         </h3>
-                        <p className="text-foreground/60 text-sm">
+                        <p className="text-foreground/60 text-sm tracking-wide">
                           {item.description}
                         </p>
                       </div>
@@ -313,15 +252,15 @@ export default function ContactPage() {
       {/* CTA Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10" />
-        
+
         <div className="max-w-4xl mx-auto text-center animate-fadeInUp">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-wide mb-4">
             Not sure where to start?
           </h2>
-          <p className="text-lg text-foreground/70 mb-8">
+          <p className="text-lg text-foreground/70 tracking-wide mb-8">
             Schedule a free consultation with our team to discuss your business goals and how we can help.
           </p>
-          <button className="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105">
+          <button className="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold uppercase tracking-widest rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105">
             Schedule Free Consultation
           </button>
         </div>
