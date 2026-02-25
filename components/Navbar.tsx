@@ -43,7 +43,7 @@ export function Navbar() {
       submenu: [
         { label: "Blog", href: "/blog" },
         { label: "Free Consultation", href: "/contact" },
-        { label: "Website Audit", href: "/audit" },
+        { label: "Our Process", href: "/process" },
       ],
     },
     { label: "About", href: "/about" },
