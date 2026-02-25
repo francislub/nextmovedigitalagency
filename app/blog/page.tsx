@@ -1,3 +1,5 @@
+'use client'
+
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { Calendar, User, ArrowRight } from 'lucide-react'
@@ -62,7 +64,7 @@ export default function BlogPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground font-mono tracking-wide">
       <Navbar />
 
       {/* Page Header */}
@@ -74,10 +76,10 @@ export default function BlogPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 uppercase bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Our Blog
           </h1>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+          <p className="text-lg text-foreground/70 max-w-2xl mx-auto tracking-wide">
             Insights, tips, and strategies to help your business grow in the digital world.
           </p>
         </div>
@@ -87,25 +89,26 @@ export default function BlogPage() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
+            {blogPosts.map((post, index) => (
               <article
                 key={post.id}
-                className="group rounded-2xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm hover:shadow-xl hover:shadow-primary/10"
+                className="group rounded-2xl border border-border/50 overflow-hidden hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm hover:shadow-xl hover:shadow-primary/20 transform hover:-translate-y-2 hover:scale-105"
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Image */}
-                <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-6xl overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                <div className="h-48 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center text-6xl overflow-hidden group-hover:scale-110 transition-transform duration-300">
                   {post.image}
                 </div>
 
                 {/* Content */}
                 <div className="p-6">
                   {/* Category */}
-                  <div className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-3">
+                  <div className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase bg-primary/10 text-primary mb-3 tracking-wider">
                     {post.category}
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                  <h2 className="text-xl font-extrabold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </h2>
 
@@ -127,7 +130,7 @@ export default function BlogPage() {
                   </div>
 
                   {/* Read More */}
-                  <button className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all duration-300">
+                  <button className="inline-flex items-center gap-2 text-primary font-bold uppercase hover:gap-3 transition-all duration-300">
                     Read More
                     <ArrowRight size={16} />
                   </button>
@@ -141,20 +144,22 @@ export default function BlogPage() {
       {/* Newsletter CTA */}
       <section className="py-16 bg-gradient-to-r from-primary/5 to-secondary/5">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-          <p className="text-foreground/70 mb-8">
+          <h2 className="text-3xl font-extrabold mb-4 uppercase">
+            Subscribe to Our Newsletter
+          </h2>
+          <p className="text-foreground/70 mb-8 tracking-wide">
             Get the latest insights delivered straight to your inbox.
           </p>
           <form className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-6 py-3 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary transition-colors"
+              className="flex-1 px-6 py-3 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary transition-colors font-mono tracking-wide"
               required
             />
             <button
               type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 whitespace-nowrap"
+              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 uppercase whitespace-nowrap"
             >
               Subscribe
             </button>
