@@ -44,7 +44,7 @@ export function Navbar() {
       href: "#",
       submenu: [
         { label: "Blog", href: "/blog" },
-        { label: "Free Consultation", href: "/contact" },
+        { label: "Free Consultation", href: "/consultation" },
         { label: "Our Process", href: "/process" },
       ],
     },
