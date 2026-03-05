@@ -69,7 +69,7 @@ export function StatsSection() {
             </span>
           </h2>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto tracking-wide">
-            Our impact speaks for itself
+            Our impact speaks for itself my
           </p>
         </div>
 
