@@ -9,7 +9,7 @@ export async function PUT(request: Request) {
     const { id, ...updateData } = body
 
     if (!id) {
-      return NextResponse.json({ error: 'Team member ID is required' }, { status: 400 })
+      return NextResponse.json({ error: 'Team member ID is requ' }, { status: 400 })
     }
 
     const updated = await prisma.teamMember.update({
