@@ -79,14 +79,14 @@ export function Footer() {
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove Digital Agency"
-              className="block dark:hidden max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[300px] h-auto object-contain"
+              className="block dark:hidden max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[250px] h-auto object-contain"
             />
 
             {/* DARK THEME LOGO */}
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove Digital Agency"
-              className="hidden dark:block max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[300px] h-auto object-contain"
+              className="hidden dark:block max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[250px] h-auto object-contain"
             />
           </Link>
             <p className="text-foreground/60 text-sm leading-relaxed mb-6 tracking-wide">
