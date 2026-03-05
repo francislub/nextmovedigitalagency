@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Loader, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-export default function RegisterInvitePage() {
+function RegisterInviteContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -14,6 +14,7 @@ export default function RegisterInvitePage() {
   const [step, setStep] = useState<'request' | 'register'>('request')
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+
   const [registerData, setRegisterData] = useState({
     name: '',
     image: '',
@@ -28,6 +29,7 @@ export default function RegisterInvitePage() {
     websiteLink: '',
     roleIds: [] as string[],
   })
+
   const [roles, setRoles] = useState<Array<{ id: string; name: string }>>([])
   const [imageFile, setImageFile] = useState<File | null>(null)
 
@@ -40,13 +42,13 @@ export default function RegisterInvitePage() {
 
   const loadRoles = async () => {
     try {
-      const response = await fetch('/api/roles')
-      const data = await response.json()
-      if (response.ok) {
+      const res = await fetch('/api/roles')
+      const data = await res.json()
+      if (res.ok) {
         setRoles(data.roles)
       }
     } catch (error) {
-      console.error('[v0] Failed to load roles:', error)
+      console.error('Failed to load roles', error)
     }
   }
 
@@ -55,15 +57,15 @@ export default function RegisterInvitePage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/send-invite', {
+      const res = await fetch('/api/auth/send-invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
 
-      const data = await response.json()
+      const data = await res.json()
 
-      if (!response.ok) {
+      if (!res.ok) {
         toast.error(data.error || 'Failed to send invite')
         return
       }
@@ -71,8 +73,7 @@ export default function RegisterInvitePage() {
       toast.success('Invitation sent! Check your email.')
       setEmail('')
     } catch (error) {
-      console.error('[v0] Request invite error:', error)
-      toast.error('An error occurred')
+      toast.error('Something went wrong')
     } finally {
       setLoading(false)
     }
@@ -80,14 +81,20 @@ export default function RegisterInvitePage() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setRegisterData({ ...registerData, image: reader.result as string })
-      }
-      reader.readAsDataURL(file)
+
+    if (!file) return
+
+    setImageFile(file)
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setRegisterData((prev) => ({
+        ...prev,
+        image: reader.result as string,
+      }))
     }
+
+    reader.readAsDataURL(file)
   }
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -97,49 +104,43 @@ export default function RegisterInvitePage() {
     try {
       let imageUrl = registerData.image
 
-      // Upload image to uploadthing if exists
       if (imageFile) {
         const formData = new FormData()
         formData.append('file', imageFile)
 
-        const uploadResponse = await fetch('/api/upload', {
+        const uploadRes = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
         })
 
-        if (uploadResponse.ok) {
-          const uploadData = await uploadResponse.json()
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json()
           imageUrl = uploadData.url
         }
       }
 
-      const response = await fetch('/api/auth/register-invite', {
+      const res = await fetch('/api/auth/register-invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...registerData,
-          image: imageUrl,
-          token,
-        }),
+        body: JSON.stringify({ ...registerData, image: imageUrl, token }),
       })
 
-      const data = await response.json()
+      const data = await res.json()
 
-      if (!response.ok) {
+      if (!res.ok) {
         toast.error(data.error || 'Registration failed')
         return
       }
 
-      toast.success('Account created successfully! Please login.')
+      toast.success('Account created successfully!')
       setTimeout(() => router.push('/login'), 1500)
     } catch (error) {
-      console.error('[v0] Register error:', error)
-      toast.error('An error occurred')
+      toast.error('Something went wrong')
     } finally {
       setLoading(false)
     }
   }
-
+  
   if (!token && step === 'request') {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4">
