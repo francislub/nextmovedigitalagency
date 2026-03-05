@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Role Model
+model Role {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  teamMembers   TeamMember[] @relation(fields: [teamMemberIds], references: [id])
+  teamMemberIds String[]     @db.ObjectId
+}
+
+// Team Member Model
+model TeamMember {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  image       String?
+  description String?
+  activeEmail String?
+  activePhone String?
+  mainRole    String  @default("admin")
+  active      Boolean @default(true)
+
+  // Social Links
+  githubLink    String?
+  twitterLink   String?
+  linkedinLink  String?
+  instagramLink String?
+  websiteLink   String?
+
+  // Relationships
+  roles   Role[]   @relation(fields: [roleIds], references: [id])
+  roleIds String[] @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Subscriber Model
+model Subscriber {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+  notified     Boolean  @default(false)
+}
+
+// Contact Form Submission
+model ContactSubmission {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("new") // new, read, replied
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Schedule Consultation
+model ScheduleConsultation {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  fullName      String
+  email         String
+  phone         String
+  company       String?
+  serviceType   String // web-design, branding, content, social-media, seo
+  preferredDate DateTime?
+  preferredTime String?
+  message       String?
+  status        String    @default("pending") // pending, confirmed, completed, cancelled
+  notified      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Team Invite (for registration)
+model TeamInvite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  token     String   @unique
+  status    String   @default("pending") // pending, accepted, rejected
+  expiresAt DateTime
+  name      String?
+  image     String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Team Member Login (for authentication)
+model TeamLogin {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String?  @unique
+  phone     String?  @unique
+  name      String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Notifications Log
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String // contact-submission, consultation-scheduled, team-member-joined
+  title     String
+  message   String
+  data      String? // JSON stringified data
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Email Log
+model EmailLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  to        String
+  subject   String
+  type      String // invite, contact-reply, consultation-confirm, notification
+  status    String   @default("pending") // pending, sent, failed
+  error     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
