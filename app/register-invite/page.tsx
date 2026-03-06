@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Mail, Loader, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-function RegisterInviteContent() {
+export default function RegisterInviteContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
