@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Mail, Loader, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-export default function RegisterInviteContent() {
+function RegisterInviteContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
@@ -394,5 +394,17 @@ export default function RegisterInviteContent() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function RegisterInvitePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="animate-spin text-primary" />
+      </div>
+    }>
+      <RegisterInviteContent />
+    </Suspense>
   )
 }
