@@ -1,8 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Mail, Phone, Edit, Trash2, Github, Linkedin, Twitter } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { Plus, Mail, Phone, Edit, Trash2, Github, Linkedin, Twitter, Instagram, Globe } from 'lucide-react'
+import { UploadButton } from '@uploadthing/react'
+
+interface Role {
+  id: string
+  name: string
+}
 
 interface TeamMember {
   id: string
@@ -18,10 +24,12 @@ interface TeamMember {
   linkedinLink?: string
   instagramLink?: string
   websiteLink?: string
+  roleIds?: string[]
 }
 
 export default function TeamPage() {
   const [team, setTeam] = useState<TeamMember[]>([])
+  const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -32,12 +40,18 @@ export default function TeamPage() {
     activePhone: '',
     mainRole: 'admin',
     image: '',
+    githubLink: '',
+    twitterLink: '',
+    linkedinLink: '',
+    instagramLink: '',
+    websiteLink: '',
+    roleIds: [],
+    active: true,
   })
-  const [saving, setSaving] = useState(false)
-  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTeam()
+    fetchRoles()
   }, [])
 
   async function fetchTeam() {
@@ -52,13 +66,21 @@ export default function TeamPage() {
     }
   }
 
+  async function fetchRoles() {
+    try {
+      const res = await fetch('/api/roles') // make an API to fetch roles
+      const data = await res.json()
+      setRoles(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSaving(true)
-
     try {
       if (editingId) {
-        const res = await fetch('/api/admin/team', {
+        const res = await fetch('/api/dmin/team', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...formData, id: editingId }),
@@ -76,35 +98,31 @@ export default function TeamPage() {
         setTeam([newMember, ...team])
         toast.success('Team member added!')
       }
-      setFormData({ name: '', description: '', activeEmail: '', activePhone: '', mainRole: 'admin', image: '' })
+      setFormData({
+        name: '', description: '', activeEmail: '', activePhone: '', mainRole: 'admin',
+        image: '', githubLink:'', twitterLink:'', linkedinLink:'', instagramLink:'', websiteLink:'', roleIds: [], active: true
+      })
       setEditingId(null)
       setIsOpen(false)
     } catch (error) {
       console.error(error)
       toast.error('Failed to save team member')
-    } finally {
-      setSaving(false)
     }
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this team member?')) return
-    setDeleting(id)
     try {
       const res = await fetch('/api/admin/team', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       })
-      if (res.ok) {
-        setTeam(prev => prev.filter(t => t.id !== id))
-        toast.success('Team member removed!')
-      }
+      if (res.ok) setTeam(prev => prev.filter(t => t.id !== id))
+      toast.success('Team member removed!')
     } catch (error) {
       console.error(error)
       toast.error('Failed to delete team member')
-    } finally {
-      setDeleting(null)
     }
   }
 
@@ -126,7 +144,7 @@ export default function TeamPage() {
           <p className="text-foreground/60 mt-2">Manage your team and permissions</p>
         </div>
         <button
-          onClick={() => { setFormData({ name:'', description:'', activeEmail:'', activePhone:'', mainRole:'member', image:'' }); setEditingId(null); setIsOpen(true) }}
+          onClick={() => { setFormData({ name:'', description:'', activeEmail:'', activePhone:'', mainRole:'member', image:'', githubLink:'', twitterLink:'', linkedinLink:'', instagramLink:'', websiteLink:'', roleIds:[], active:true }); setEditingId(null); setIsOpen(true) }}
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg transition-all"
         >
           <Plus size={20}/> Add Member
@@ -150,17 +168,18 @@ export default function TeamPage() {
               {member.githubLink && <a href={member.githubLink} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary/20 rounded-lg"><Github size={18}/></a>}
               {member.twitterLink && <a href={member.twitterLink} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary/20 rounded-lg"><Twitter size={18}/></a>}
               {member.linkedinLink && <a href={member.linkedinLink} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary/20 rounded-lg"><Linkedin size={18}/></a>}
+              {member.instagramLink && <a href={member.instagramLink} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary/20 rounded-lg"><Instagram size={18}/></a>}
+              {member.websiteLink && <a href={member.websiteLink} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-secondary/20 rounded-lg"><Globe size={18}/></a>}
             </div>
 
             <div className="flex gap-2">
               <button onClick={()=>handleEdit(member)} className="flex-1 py-2 px-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors font-medium text-sm flex items-center justify-center gap-2">
                 <Edit size={16}/> Edit
               </button>
-              <button onClick={()=>handleDelete(member.id)} disabled={deleting===member.id} className="flex-1 py-2 px-3 bg-destructive/20 text-destructive rounded-lg hover:bg-destructive/30 transition-colors font-medium text-sm flex items-center justify-center gap-2">
+              <button onClick={()=>handleDelete(member.id)} className="flex-1 py-2 px-3 bg-destructive/20 text-destructive rounded-lg hover:bg-destructive/30 transition-colors font-medium text-sm flex items-center justify-center gap-2">
                 <Trash2 size={16}/> Remove
               </button>
             </div>
-
           </div>
         ))}
       </div>
@@ -168,40 +187,50 @@ export default function TeamPage() {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
+          <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold mb-6">{editingId ? 'Edit Team Member':'Add Team Member'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
-                <input type="text" value={formData.name || ''} onChange={e=>setFormData({...formData,name:e.target.value})} placeholder="John Doe" required className="w-full px-4 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none"/>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <input type="text" value={formData.description || ''} onChange={e=>setFormData({...formData,description:e.target.value})} placeholder="CEO & Founder" className="w-full px-4 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none"/>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
-                  <input type="email" value={formData.activeEmail || ''} onChange={e=>setFormData({...formData,activeEmail:e.target.value})} placeholder="john@example.com" className="w-full px-4 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none"/>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Phone</label>
-                  <input type="tel" value={formData.activePhone || ''} onChange={e=>setFormData({...formData,activePhone:e.target.value})} placeholder="+1234567890" className="w-full px-4 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none"/>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Role</label>
-                <select value={formData.mainRole || 'member'} onChange={e=>setFormData({...formData,mainRole:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none">
-                  <option value="admin">Admin</option>
-                  <option value="designer">Designer</option>
-                  <option value="developer">Developer</option>
-                  <option value="manager">Manager</option>
-                  <option value="member">Member</option>
-                </select>
-              </div>
+
+              {/* Name & Description */}
+              <input placeholder="Full Name" value={formData.name||''} onChange={e=>setFormData({...formData,name:e.target.value})} required className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="Description" value={formData.description||''} onChange={e=>setFormData({...formData,description:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+
+              {/* Email & Phone */}
+              <input placeholder="Email" type="email" value={formData.activeEmail||''} onChange={e=>setFormData({...formData,activeEmail:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="Phone" type="tel" value={formData.activePhone||''} onChange={e=>setFormData({...formData,activePhone:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+
+              {/* Main Role */}
+              <select value={formData.mainRole||'member'} onChange={e=>setFormData({...formData,mainRole:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border">
+                <option value="admin">Admin</option>
+                <option value="designer">Designer</option>
+                <option value="developer">Developer</option>
+                <option value="manager">Manager</option>
+                <option value="member">Member</option>
+              </select>
+
+              {/* Active Checkbox */}
+              <label className="flex items-center gap-2"><input type="checkbox" checked={formData.active} onChange={e=>setFormData({...formData,active:e.target.checked})}/> Active</label>
+
+              {/* Social Links */}
+              <input placeholder="GitHub URL" value={formData.githubLink||''} onChange={e=>setFormData({...formData,githubLink:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="Twitter URL" value={formData.twitterLink||''} onChange={e=>setFormData({...formData,twitterLink:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="LinkedIn URL" value={formData.linkedinLink||''} onChange={e=>setFormData({...formData,linkedinLink:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="Instagram URL" value={formData.instagramLink||''} onChange={e=>setFormData({...formData,instagramLink:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+              <input placeholder="Website URL" value={formData.websiteLink||''} onChange={e=>setFormData({...formData,websiteLink:e.target.value})} className="w-full px-4 py-2 rounded-lg border border-border"/>
+
+              {/* Roles Multi-Select */}
+              <select multiple value={formData.roleIds||[]} onChange={e=>setFormData({...formData,roleIds:Array.from(e.target.selectedOptions,d=>d.value)})} className="w-full px-4 py-2 rounded-lg border border-border">
+                {roles.map(role => <option key={role.id} value={role.id}>{role.name}</option>)}
+              </select>
+
+              {/* Upload Image */}
+              <UploadButton endpoint="imageUploader" onClientUploadComplete={res=>setFormData({...formData,image:res[0].fileUrl})}>
+                {({ isUploading }) => <button type="button" disabled={isUploading} className="px-4 py-2 bg-secondary/20 rounded-lg">{isUploading ? 'Uploading...' : formData.image ? 'Change Image' : 'Upload Image'}</button>}
+              </UploadButton>
+
               <div className="flex gap-2 justify-end mt-6">
-                <button type="button" onClick={()=>{setIsOpen(false); setEditingId(null)}} className="px-6 py-2 bg-secondary/20 hover:bg-secondary/30 rounded-lg font-semibold transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg transition-all">{editingId?'Update':'Add'} Member</button>
+                <button type="button" onClick={()=>{setIsOpen(false); setEditingId(null)}} className="px-6 py-2 bg-secondary/20 rounded-lg">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg">{editingId?'Update':'Add'} Member</button>
               </div>
             </form>
           </div>
