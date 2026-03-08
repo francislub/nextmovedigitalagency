@@ -7,27 +7,48 @@ import { useEffect, useState } from "react"
 export function Hero() {
   const [isVisible, setIsVisible] = useState(false)
 
+  const words = [
+    "Transform",
+    "Grow",
+    "Elevate",
+    "Power",
+    "Scale",
+    "Launch",
+  ]
+
+  const [index, setIndex] = useState(0)
+
   useEffect(() => {
     setIsVisible(true)
+
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length)
+    }, 2500)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10 font-mono">
-      {/* Animated gradient background */}
+      
+      {/* Background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/5" />
+
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/8 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/3 right-0 w-72 h-72 bg-accent/5 rounded-full blur-2xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Content */}
+
+          {/* LEFT CONTENT */}
           <div className="order-2 lg:order-1">
+
             {/* Badge */}
             <div
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 mb-6 transition-all duration-700 tracking-wide uppercase ${
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 mb-6 transition-all duration-700 ${
                 isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
               }`}
             >
@@ -37,20 +58,21 @@ export function Hero() {
               </span>
             </div>
 
-            {/* Main Headline */}
+            {/* Animated Headline */}
             <h1
-              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 transition-all duration-900 delay-100 leading-tight tracking-tight text-balance ${
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight tracking-tight transition-all duration-700 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
             >
-              <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-gradient-text">
-                Transform Your Business Vision
-              </span>
+              <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+                {words[index]}
+              </span>{" "}
+              Your Business Vision
             </h1>
 
             {/* Subheading */}
             <p
-              className={`text-base md:text-lg text-foreground/70 mb-8 leading-relaxed tracking-wide transition-all duration-700 delay-200 ${
+              className={`text-base md:text-lg text-foreground/70 mb-8 leading-relaxed transition-all duration-700 delay-200 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
             >
@@ -60,7 +82,7 @@ export function Hero() {
               customers and revenue.
             </p>
 
-            {/* CTA Buttons */}
+            {/* Buttons */}
             <div
               className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-300 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -68,7 +90,7 @@ export function Hero() {
             >
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 group w-full sm:w-auto tracking-wide"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 transform hover:scale-105 group"
               >
                 Get Started
                 <ArrowRight
@@ -79,7 +101,7 @@ export function Hero() {
 
               <Link
                 href="/all"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-all duration-300 w-full sm:w-auto tracking-wide"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary/5 transition-all duration-300"
               >
                 View Our Work
               </Link>
@@ -95,22 +117,16 @@ export function Hero() {
                 { number: "20+", label: "Projects Delivered" },
                 { number: "3+", label: "Years Experience" },
                 { number: "99%", label: "Client Satisfaction" },
-              ].map((stat, index) => (
+              ].map((stat) => (
                 <div
                   key={stat.label}
                   className="p-4 rounded-lg bg-card/50 border border-border/30 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-lg text-center"
-                  style={{
-                    animationName: isVisible ? "slideUp" : "none",
-                    animationDuration: "0.6s",
-                    animationTimingFunction: "ease-out",
-                    animationFillMode: "forwards",
-                    animationDelay: `${400 + index * 100}ms`,
-                  }}
                 >
-                  <div className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent tracking-tight">
+                  <div className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     {stat.number}
                   </div>
-                  <p className="text-xs md:text-sm text-foreground/60 mt-1 tracking-wide uppercase">
+
+                  <p className="text-xs md:text-sm text-foreground/60 mt-1 uppercase">
                     {stat.label}
                   </p>
                 </div>
@@ -118,59 +134,32 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right Image/Visual */}
+          {/* RIGHT SIDE VIDEO */}
           <div
-              className={`order-1 lg:order-2 relative h-96 md:h-[500px] rounded-2xl overflow-hidden group transition-all duration-700 delay-300 ${
-                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
-            >
-              {/* Video Background */}
-              <iframe
-                className="absolute inset-0 w-full h-full object-cover"
-                src="https://www.youtube.com/embed/9No-FiEInLA?autoplay=1&mute=1&loop=1&playlist=9No-FiEInLA&controls=0&showinfo=0&modestbranding=1"
-                title="Background Video"
-                frameBorder="0"
-                allow="autoplay; fullscreen"
-              />
+            className={`order-1 lg:order-2 relative h-96 md:h-[500px] rounded-2xl overflow-hidden group transition-all duration-700 ${
+              isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            }`}
+          >
+            <iframe
+              className="absolute inset-0 w-full h-full object-cover"
+              src="https://www.youtube.com/embed/9No-FiEInLA?autoplay=1&mute=1&loop=1&playlist=9No-FiEInLA&controls=0"
+              title="Background Video"
+              frameBorder="0"
+              allow="autoplay; fullscreen"
+            />
 
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-secondary/20 to-background/80" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-secondary/20 to-background/80" />
 
-              {/* Floating glow blobs */}
-              <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-primary to-secondary rounded-full blur-3xl opacity-20 animate-float -translate-x-1/2 -translate-y-1/2" />
-              <div
-                className="absolute bottom-0 right-0 w-56 h-56 bg-gradient-to-br from-secondary to-accent rounded-full blur-3xl opacity-15 animate-float"
-                style={{ animationDelay: "1s" }}
-              />
-
-              {/* Text & Icon on top of video */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-                <div className="text-center space-y-6">
-                  <div className="relative inline-block">
-                    {/* <div
-                      className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-full blur-xl opacity-40 animate-pulse"
-                      style={{ animationDuration: "3s" }}
-                    />
-                    <div className="relative bg-gradient-to-br from-primary/10 to-secondary/10 p-8 rounded-full backdrop-blur-sm border border-primary/20">
-                      <Sparkles size={80} className="text-primary animate-float" />
-                    </div> */}
-
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-extrabold text-white tracking-tight drop-shadow-lg">
-                      Digital Excellence
-                    </h3>
-                    <p className="text-white/80 text-sm max-w-xs tracking-wide drop-shadow">
-                      Innovative solutions built for your success
-                    </p>
-                  </div>
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-extrabold text-white">
+                  Digital Excellence
+                </h3>
+                <p className="text-white/80 text-sm">
+                  Innovative solutions built for your success
+                </p>
               </div>
-
-              {/* Borders & shine */}
-              <div className="absolute inset-0 border border-primary/20 rounded-2xl group-hover:border-primary/40 transition-all duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl transform skew-x-12" />
+            </div>
           </div>
         </div>
       </div>
