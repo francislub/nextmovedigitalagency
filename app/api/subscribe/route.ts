@@ -1,161 +1,121 @@
-import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
-import nodemailer from "nodemailer"
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
-  console.log("🚀 Subscribe API triggered")
+  console.log("🚀 Subscribe API triggered");
 
   try {
-    const body = await req.json()
-    console.log("📦 Request body:", body)
-
-    const { email } = body
+    const { email } = await req.json();
+    console.log("📦 Request body:", { email });
 
     if (!email) {
-      console.log("❌ No email provided")
-
       return NextResponse.json(
         { success: false, message: "Email is required" },
         { status: 400 }
-      )
+      );
     }
 
-    console.log("📧 Email received:", email)
-
     // Check existing subscriber
-    console.log("🔍 Checking if subscriber already exists...")
-
-    const existing = await prisma.subscriber.findUnique({
-      where: { email }
-    })
-
+    const existing = await prisma.subscriber.findUnique({ where: { email } });
     if (existing) {
-      console.log("⚠️ Subscriber already exists:", email)
-
       return NextResponse.json({
         success: false,
-        message: "You are already subscribed"
-      })
+        message: "You are already subscribed",
+      });
     }
 
     // Create subscriber
-    console.log("💾 Creating subscriber in database...")
-
-    const subscriber = await prisma.subscriber.create({
-      data: { email }
-    })
-
-    console.log("✅ Subscriber created:", subscriber)
+    const subscriber = await prisma.subscriber.create({ data: { email } });
+    console.log("✅ Subscriber created:", subscriber);
 
     // Fetch admins
-    console.log("👨‍💼 Fetching admin users to notify...")
-
     const admins = await prisma.teamMember.findMany({
-      where: {
-        mainRole: "admin",
-        active: true
-      },
-      select: {
-        activeEmail: true,
-        name: true
-      }
-    })
+      where: { mainRole: "admin", active: true },
+      select: { activeEmail: true, name: true },
+    });
+    const adminEmails = admins.map(a => a.activeEmail).filter(Boolean);
 
-    console.log("👥 Admins found:", admins)
-
-    const adminEmails = admins
-      .map(a => a.activeEmail)
-      .filter(Boolean)
-
-    console.log("📬 Admin emails:", adminEmails)
-
-    // Create transporter
-    console.log("⚙️ Creating email transporter...")
-
+    // Configure transporter
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    })
+      secure: process.env.SMTP_SECURE === "true",
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    });
 
-    console.log("📨 Email transporter ready")
+    // HTML email for subscriber
+    const subscriberHTML = `
+      <div style="font-family:Arial,sans-serif;color:#333;padding:20px;">
+        <h2 style="color:#0f172a;">Welcome to NextMove Digital Agency!</h2>
+        <p>Hi there,</p>
+        <p>Thank you for subscribing to our newsletter. You will now receive insights, tips, and updates directly from our team.</p>
+        <p>We’re excited to share our knowledge and keep you informed about the latest trends.</p>
+        <p style="margin-top:20px;color:#6b7280;">If you have any questions, feel free to reply to this email. We aim to respond within 12 hours.</p>
+        <p style="margin-top:20px;">Best regards,<br/><strong>NextMove Team</strong></p>
+      </div>
+    `;
 
-    // Send welcome email
-    console.log("📤 Sending welcome email to subscriber...")
+    // HTML email for admins
+    const adminHTML = `
+      <div style="font-family:Arial,sans-serif;color:#333;padding:20px;">
+        <h2 style="color:#0f172a;">New Newsletter Subscriber</h2>
+        <p>A new user has subscribed to the newsletter:</p>
+        <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+          <tr><td><strong>Email:</strong></td><td>${email}</td></tr>
+          <tr><td><strong>Subscribed At:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+        </table>
+        <p style="margin-top:20px;color:#6b7280;">Please welcome our new subscriber!</p>
+      </div>
+    `;
 
-    await transporter.sendMail({
-      from: `"NextMove Digital Agency" <${process.env.SMTP_FROM}>`,
-      to: email,
-      subject: "Welcome to NextMove Newsletter 🚀",
-      html: `
-        <h2>Welcome to NextMove Digital Agency</h2>
-        <p>Thank you for subscribing to our newsletter.</p>
-        <p>You will now receive insights, tips, and updates from our team.</p>
-      `
-    })
+    // Send both emails in parallel
+    await Promise.all([
+      // Welcome email to subscriber
+      transporter.sendMail({
+        from: `"NextMove Team" <${process.env.SMTP_FROM}>`,
+        to: email,
+        subject: "Welcome to NextMove Newsletter 🚀",
+        html: subscriberHTML,
+      }),
+      // Admin notification
+      adminEmails.length > 0 &&
+        transporter.sendMail({
+          from: `"NextMove System" <${process.env.SMTP_FROM}>`,
+          to: adminEmails,
+          subject: "New Newsletter Subscriber",
+          html: adminHTML,
+        }),
+    ].filter(Boolean));
 
-    console.log("✅ Subscriber email sent")
+    // Save notification for admins
+    if (adminEmails.length > 0) {
+      await prisma.notification.create({
+        data: {
+          type: "newsletter",
+          title: "New Subscriber",
+          message: `${email} subscribed to the newsletter`,
+          data: JSON.stringify(subscriber),
+        },
+      });
+    }
 
     // Save email log
-    console.log("📝 Saving email log...")
-
     await prisma.emailLog.create({
       data: {
         to: email,
         subject: "Newsletter Subscription",
         type: "notification",
-        status: "sent"
-      }
-    })
+        status: "sent",
+      },
+    });
 
-    console.log("📦 Email log saved")
-
-    // Notify admins
-    if (adminEmails.length > 0) {
-      console.log("📤 Sending admin notification email...")
-
-      await transporter.sendMail({
-        from: `"NextMove System" <${process.env.SMTP_FROM}>`,
-        to: adminEmails,
-        subject: "New Newsletter Subscriber",
-        html: `
-          <h3>New Subscriber Alert</h3>
-          <p><strong>Email:</strong> ${email}</p>
-        `
-      })
-
-      console.log("✅ Admin notification sent")
-    }
-
-    // Save notification
-    console.log("🔔 Saving system notification...")
-
-    await prisma.notification.create({
-      data: {
-        type: "newsletter",
-        title: "New Subscriber",
-        message: `${email} subscribed to the newsletter`,
-        data: JSON.stringify(subscriber)
-      }
-    })
-
-    console.log("✅ Notification stored")
-
-    return NextResponse.json({
-      success: true,
-      message: "Successfully subscribed"
-    })
-
+    return NextResponse.json({ success: true, message: "Successfully subscribed" });
   } catch (error) {
-    console.error("🔥 SUBSCRIBE API ERROR:", error)
-
+    console.error("🔥 SUBSCRIBE API ERROR:", error);
     return NextResponse.json(
       { success: false, message: "Subscription failed" },
       { status: 500 }
-    )
+    );
   }
 }
