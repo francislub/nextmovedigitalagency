@@ -69,24 +69,32 @@ export async function POST(req: Request) {
       </div>
     `;
 
-    // Send both emails in parallel
-    await Promise.all([
-      // Welcome email to subscriber
-      transporter.sendMail({
+    // Send emails safely
+    try {
+      await transporter.sendMail({
         from: `"NextMove Team" <${process.env.SMTP_FROM}>`,
         to: email,
         subject: "Welcome to NextMove Newsletter 🚀",
         html: subscriberHTML,
-      }),
-      // Admin notification
-      adminEmails.length > 0 &&
-        transporter.sendMail({
+      });
+      console.log("✅ Subscriber email sent");
+    } catch (e) {
+      console.error("⚠️ Failed to send subscriber email:", e);
+    }
+
+    if (adminEmails.length > 0) {
+      try {
+        await transporter.sendMail({
           from: `"NextMove System" <${process.env.SMTP_FROM}>`,
           to: adminEmails,
           subject: "New Newsletter Subscriber",
           html: adminHTML,
-        }),
-    ].filter(Boolean));
+        });
+        console.log("✅ Admin notification sent");
+      } catch (e) {
+        console.error("⚠️ Failed to send admin email:", e);
+      }
+    }
 
     // Save notification for admins
     if (adminEmails.length > 0) {
@@ -110,7 +118,11 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, message: "Successfully subscribed" });
+    // Return success no matter what
+    return NextResponse.json({
+      success: true,
+      message: "Successfully subscribed",
+    });
   } catch (error) {
     console.error("🔥 SUBSCRIBE API ERROR:", error);
     return NextResponse.json(
