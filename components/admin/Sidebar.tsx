@@ -24,7 +24,7 @@ const menuItems = [
   { icon: Calendar, label: 'Consultations', href: '/admin/consultations' },
   { icon: Users, label: 'Team Members', href: '/admin/team' },
   { icon: MessageSquare, label: 'Subscribers', href: '/admin/subscribers' },
-  { icon: Settings, label: 'Settings', href: '/admin/settings' },
+  // { icon: Settings, label: 'Settings', href: '/admin/settings' },
 ]
 
 export function AdminSidebar() {
