@@ -82,9 +82,7 @@ export function AdminSidebar() {
               alt="NextMove"
               className="h-8 w-auto"
             />
-            <span className="font-bold text-lg hidden sm:inline">
-              NextMove
-            </span>
+            
           </Link>
         </div>
 
