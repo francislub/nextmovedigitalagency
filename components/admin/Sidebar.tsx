@@ -80,11 +80,9 @@ export function AdminSidebar() {
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove"
-              className="h-8 w-auto"
+              className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain"
             />
-            <span className="font-bold text-lg hidden sm:inline">
-              NextMove
-            </span>
+          
           </Link>
         </div>
 
