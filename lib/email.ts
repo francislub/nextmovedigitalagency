@@ -37,7 +37,7 @@ export async function sendEmail({
 }
 
 export async function sendInviteEmail(email: string, token: string) {
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}register-invite?token=${token}`
+  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/register-invite?token=${token}`
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #333;">Join NextMove Digital Agency Team</h1>
