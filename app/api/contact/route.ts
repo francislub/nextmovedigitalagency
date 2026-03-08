@@ -5,8 +5,7 @@ import nodemailer from "nodemailer";
 export async function POST(req: Request) {
   try {
     const { name, email, phone, subject, message } = await req.json();
-    console.log("🚀 Contact API triggered");
-    console.log("📦 Request body:", { name, email, phone, subject, message });
+    console.log("🚀 Contact API triggered", { name, email, phone, subject, message });
 
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
@@ -17,13 +16,7 @@ export async function POST(req: Request) {
 
     // Save submission
     const submission = await prisma.contactSubmission.create({
-      data: {
-        fullName: name,
-        email,
-        phone,
-        subject,
-        message,
-      },
+      data: { fullName: name, email, phone, subject, message },
     });
     console.log("💾 Submission saved:", submission);
 
@@ -32,12 +25,11 @@ export async function POST(req: Request) {
       where: { mainRole: "admin", active: true },
       select: { activeEmail: true, name: true },
     });
-    console.log("👨‍💼 Admins found:", admins);
 
     const adminEmails = admins.map(a => a.activeEmail).filter(Boolean);
     console.log("📬 Admin emails:", adminEmails);
 
-    // Configure email
+    // Configure email transporter
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
@@ -47,26 +39,61 @@ export async function POST(req: Request) {
         pass: process.env.SMTP_PASSWORD,
       },
     });
-    console.log("⚙️ Email transporter ready");
 
-    // Notify admins
+    // HTML Email Templates
+    const adminEmailHTML = `
+      <div style="font-family:Arial,sans-serif;color:#333;">
+        <h2 style="color:#0f172a;">New Contact Form Submission</h2>
+        <p>A user has submitted a contact form on your website:</p>
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><td><strong>Name:</strong></td><td>${name}</td></tr>
+          <tr><td><strong>Email:</strong></td><td>${email}</td></tr>
+          <tr><td><strong>Phone:</strong></td><td>${phone || "N/A"}</td></tr>
+          <tr><td><strong>Subject:</strong></td><td>${subject}</td></tr>
+          <tr><td><strong>Message:</strong></td><td>${message}</td></tr>
+        </table>
+        <p style="margin-top:20px;color:#6b7280;">Please follow up within 12 hours.</p>
+      </div>
+    `;
+
+    const userEmailHTML = `
+      <div style="font-family:Arial,sans-serif;color:#333;">
+        <h2 style="color:#0f172a;">Thank You for Contacting Us!</h2>
+        <p>Hi ${name},</p>
+        <p>We have received your message regarding <strong>${subject}</strong>. Our team will review your message and reply within 12 hours.</p>
+        <p>Your message:</p>
+        <blockquote style="border-left:4px solid #3b82f6;padding-left:10px;margin-left:0;color:#6b7280;">
+          ${message}
+        </blockquote>
+        <p>Thank you for reaching out to us!</p>
+        <p style="margin-top:20px;">Best regards,<br/><strong>NextMove Team</strong></p>
+      </div>
+    `;
+
+    // Send emails in parallel
+    const sendEmails = [
+      // Admin notification
+      adminEmails.length > 0 &&
+        transporter.sendMail({
+          from: `"NextMove System" <${process.env.SMTP_USER}>`,
+          to: adminEmails,
+          subject: `New Contact Form Submission: ${subject}`,
+          html: adminEmailHTML,
+        }),
+      // User acknowledgment
+      transporter.sendMail({
+        from: `"NextMove Team" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: `Thank You for Contacting NextMove`,
+        html: userEmailHTML,
+      }),
+    ].filter(Boolean);
+
+    const results = await Promise.all(sendEmails);
+    console.log("📨 Emails sent:", results.map(r => r.accepted));
+
+    // Save notification for admins
     if (adminEmails.length > 0) {
-      const mailResult = await transporter.sendMail({
-        from: `"NextMove System" <${process.env.SMTP_USER}>`,
-        to: adminEmails,
-        subject: `New Contact Form Submission: ${subject}`,
-        html: `
-          <h3>New Contact Submission</h3>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone || "N/A"}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <p><strong>Message:</strong> ${message}</p>
-        `,
-      });
-      console.log("📨 Admins notified via email:", mailResult.accepted);
-
-      // Save notification
       await prisma.notification.create({
         data: {
           type: "contact-submission",
@@ -75,7 +102,6 @@ export async function POST(req: Request) {
           data: JSON.stringify(submission),
         },
       });
-      console.log("🔔 Notification saved");
     }
 
     return NextResponse.json({ success: true, message: "Message sent successfully" });
