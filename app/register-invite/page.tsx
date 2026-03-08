@@ -395,15 +395,3 @@ export default function RegisterInvitePage() {
     </main>
   )
 }
-
-export default function RegisterInvitePage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader className="animate-spin text-primary" />
-      </div>
-    }>
-      <RegisterInviteContent />
-    </Suspense>
-  )
-}
