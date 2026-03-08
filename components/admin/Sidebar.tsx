@@ -80,7 +80,7 @@ export function AdminSidebar() {
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove"
-              className="h-8 w-auto"
+              className="max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[250px] h-auto object-contain "
             />
             
           </Link>
