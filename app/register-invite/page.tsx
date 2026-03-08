@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = "force-dynamic"
+
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -97,7 +99,6 @@ export default function RegisterInvitePage() {
     try {
       let imageUrl = registerData.image
 
-      // Upload image to uploadthing if exists
       if (imageFile) {
         const formData = new FormData()
         formData.append('file', imageFile)
@@ -144,7 +145,6 @@ export default function RegisterInvitePage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4">
         <div className="w-full max-w-md">
-          {/* Logo */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
               <img
@@ -158,15 +158,21 @@ export default function RegisterInvitePage() {
                 className="h-12 w-auto hidden dark:block"
               />
             </Link>
+
             <h1 className="text-3xl font-bold mb-2">Join Our Team</h1>
-            <p className="text-foreground/60">Request an invitation to join NextMove</p>
+            <p className="text-foreground/60">
+              Request an invitation to join NextMove
+            </p>
           </div>
 
-          {/* Request Card */}
           <div className="bg-card rounded-2xl border border-border/50 p-8 shadow-lg">
             <form onSubmit={handleRequestInvite} className="space-y-6">
+
               <div>
-                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <label className="block text-sm font-medium mb-2">
+                  Email Address
+                </label>
+
                 <input
                   type="email"
                   value={email}
@@ -178,7 +184,8 @@ export default function RegisterInvitePage() {
               </div>
 
               <p className="text-sm text-foreground/60">
-                We'll send you an invitation link via email. Click it to complete your registration.
+                We'll send you an invitation link via email. Click it to
+                complete your registration.
               </p>
 
               <button
@@ -189,14 +196,19 @@ export default function RegisterInvitePage() {
                 {loading && <Loader size={18} className="animate-spin" />}
                 {loading ? 'Sending...' : 'Send Invitation'}
               </button>
+
             </form>
 
             <p className="text-center mt-6">
               Already have an invite?{' '}
-              <Link href="/login" className="text-primary hover:text-secondary font-semibold">
+              <Link
+                href="/login"
+                className="text-primary hover:text-secondary font-semibold"
+              >
                 Login here
               </Link>
             </p>
+
           </div>
         </div>
       </main>
@@ -206,45 +218,61 @@ export default function RegisterInvitePage() {
   if (!token) {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4">
+
         <div className="text-center">
           <AlertCircle size={48} className="mx-auto mb-4 text-destructive" />
+
           <h1 className="text-2xl font-bold mb-2">Invalid Link</h1>
+
           <p className="text-foreground/60 mb-6">
             The invitation link is invalid or expired.
           </p>
+
           <Link
             href="/register-invite"
             className="inline-block px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold rounded-lg hover:shadow-lg transition-all"
           >
             Request New Invite
           </Link>
+
         </div>
+
       </main>
     )
   }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4">
+
       <div className="w-full max-w-md">
-        {/* Logo */}
+
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
+
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
               alt="NextMove"
               className="h-12 w-auto dark:hidden"
             />
+
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
               alt="NextMove"
               className="h-12 w-auto hidden dark:block"
             />
+
           </Link>
-          <h1 className="text-3xl font-bold mb-2">Complete Registration</h1>
-          <p className="text-foreground/60">Create your team member profile</p>
+
+          <h1 className="text-3xl font-bold mb-2">
+            Complete Registration
+          </h1>
+
+          <p className="text-foreground/60">
+            Create your team member profile
+          </p>
+
         </div>
 
-        {/* Register Card */}
         <div className="bg-card rounded-2xl border border-border/50 p-8 shadow-lg max-h-[90vh] overflow-y-auto">
           <form onSubmit={handleRegister} className="space-y-5">
             {/* Name */}
@@ -391,7 +419,9 @@ export default function RegisterInvitePage() {
             </button>
           </form>
         </div>
+
       </div>
+
     </main>
   )
 }
