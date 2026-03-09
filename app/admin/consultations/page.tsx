@@ -44,25 +44,30 @@ export default function ConsultationsPage() {
       c.serviceType.toLowerCase().includes(search.toLowerCase())
   )
 
-  // Delete consultation
-  const deleteConsultation = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this consultation?')) return
+ // Replace your existing deleteConsultation function with this:
+const deleteConsultation = async (id: string) => {
+  if (!confirm('Are you sure you want to delete this consultation?')) return
 
-    try {
-      const res = await fetch(`/api/consultation/${id}`, { method: 'DELETE' })
-      const data = await res.json()
+  try {
+    const res = await fetch('/api/consultation/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
 
-      if (data.success) {
-        setConsultations((prev) => prev.filter((c) => c.id !== id))
-        toast.success('Consultation deleted')
-      } else {
-        toast.error('Failed to delete consultation')
-      }
-    } catch (error) {
-      console.error('Delete error:', error)
-      toast.error('An error occurred')
+    const data = await res.json()
+
+    if (data.success) {
+      setConsultations((prev) => prev.filter((c) => c.id !== id))
+      toast.success('Consultation deleted')
+    } else {
+      toast.error(data.error || 'Failed to delete consultation')
     }
+  } catch (error) {
+    console.error('Delete error:', error)
+    toast.error('An error occurred')
   }
+}
 
   if (loading) {
     return (
