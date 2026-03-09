@@ -184,12 +184,12 @@ export default function RegisterInvitePage() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block mb-6">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20light.PNG-fBveX1QZtkKBhmWFI1waYPY98DXVoz.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
                 alt="NextMove"
                 className="h-12 w-auto dark:hidden"
               />
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo%20dark.PNG-rrKJPZEYoUNF8KtUZEGTzZSk6DbjCj.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
                 alt="NextMove"
                 className="h-12 w-auto hidden dark:block"
               />
