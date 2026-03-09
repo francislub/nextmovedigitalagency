@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Mail, Trash2, Archive, Search } from 'lucide-react'
+import { Mail, Trash2, Search, Eye } from 'lucide-react'
 
 interface Contact {
   id: string
@@ -44,8 +44,6 @@ export default function ContactsPage() {
     if (!confirm("Are you sure you want to delete this contact?")) return
 
     try {
-      console.log("Deleting contact:", id)
-
       const res = await fetch('/api/admin/contacts', {
         method: 'DELETE',
         headers: {
@@ -57,8 +55,6 @@ export default function ContactsPage() {
       const data = await res.json()
 
       if (data.success) {
-        console.log("Deleted successfully")
-
         setContacts((prev) => prev.filter((c) => c.id !== id))
       } else {
         alert("Failed to delete contact")
@@ -86,6 +82,7 @@ export default function ContactsPage() {
   return (
     <div className="space-y-6">
 
+      {/* Header */}
       <div>
         <h1 className="text-4xl font-bold">Contact Forms</h1>
         <p className="text-foreground/60 mt-2">
@@ -95,7 +92,7 @@ export default function ContactsPage() {
 
       {/* Search */}
       <div className="flex-1 relative">
-        <Search className="absolute left-3 top-3 text-foreground/40" size={20} />
+        <Search className="absolute left-3 top-3 text-gray-400" size={20} />
         <input
           type="text"
           placeholder="Search by name, email, or subject..."
@@ -105,16 +102,19 @@ export default function ContactsPage() {
         />
       </div>
 
-      {/* Table */}
-      <div className="bg-card rounded-xl border overflow-hidden">
+      {/* Contacts Table */}
+      <div className="bg-white rounded-xl border overflow-hidden">
+
         {filteredContacts.length === 0 ? (
           <div className="text-center py-12">
-            <Mail size={48} className="mx-auto mb-4 text-foreground/40" />
+            <Mail size={48} className="mx-auto mb-4 text-gray-400" />
             <p>No contacts found</p>
           </div>
         ) : (
+
           <table className="w-full">
-            <thead className="border-b">
+
+            <thead className="border-b bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left">Name</th>
                 <th className="px-6 py-3 text-left">Email</th>
@@ -125,55 +125,122 @@ export default function ContactsPage() {
             </thead>
 
             <tbody>
+
               {filteredContacts.map((contact) => (
                 <tr key={contact.id} className="border-b hover:bg-gray-50">
 
-                  <td className="px-6 py-4">{contact.fullName}</td>
-                  <td className="px-6 py-4">{contact.email}</td>
-                  <td className="px-6 py-4">{contact.subject}</td>
+                  <td className="px-6 py-4 font-medium">
+                    {contact.fullName}
+                  </td>
+
+                  <td className="px-6 py-4 text-sm">
+                    {contact.email}
+                  </td>
 
                   <td className="px-6 py-4">
+                    {contact.subject}
+                  </td>
+
+                  <td className="px-6 py-4 text-sm">
                     {new Date(contact.createdAt).toLocaleDateString()}
                   </td>
 
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right space-x-2">
+
+                    {/* VIEW BUTTON */}
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteContact(contact.id)
-                      }}
-                      className="p-2 hover:bg-red-100 rounded-lg"
+                      onClick={() => setSelectedContact(contact)}
+                      className="p-2 bg-blue-100 hover:bg-blue-200 rounded-lg"
+                    >
+                      <Eye size={18} className="text-blue-600" />
+                    </button>
+
+                    {/* DELETE BUTTON */}
+                    <button
+                      onClick={() => deleteContact(contact.id)}
+                      className="p-2 bg-red-100 hover:bg-red-200 rounded-lg"
                     >
                       <Trash2 size={18} className="text-red-600" />
                     </button>
+
                   </td>
 
                 </tr>
               ))}
+
             </tbody>
+
           </table>
+
         )}
+
       </div>
 
-      {/* Modal */}
+      {/* VIEW MODAL */}
       {selectedContact && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-xl max-w-xl w-full">
-            <h2 className="text-xl font-bold">{selectedContact.fullName}</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-            <p className="mt-2">{selectedContact.email}</p>
+          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full">
 
-            <p className="mt-4">{selectedContact.message}</p>
+            <h2 className="text-2xl font-bold mb-6">
+              Contact Details
+            </h2>
+
+            <div className="space-y-4">
+
+              <div>
+                <p className="text-gray-500 text-sm">Full Name</p>
+                <p className="font-medium">{selectedContact.fullName}</p>
+              </div>
+
+              <div>
+                <p className="text-gray-500 text-sm">Email</p>
+                <p className="font-medium">{selectedContact.email}</p>
+              </div>
+
+              {selectedContact.phone && (
+                <div>
+                  <p className="text-gray-500 text-sm">Phone</p>
+                  <p className="font-medium">{selectedContact.phone}</p>
+                </div>
+              )}
+
+              <div>
+                <p className="text-gray-500 text-sm">Subject</p>
+                <p className="font-medium">{selectedContact.subject}</p>
+              </div>
+
+              <div>
+                <p className="text-gray-500 text-sm">Message</p>
+                <div className="bg-gray-100 p-4 rounded-lg mt-1">
+                  {selectedContact.message}
+                </div>
+              </div>
+
+              <div>
+                <p className="text-gray-500 text-sm">Status</p>
+                <p>{selectedContact.status}</p>
+              </div>
+
+              <div>
+                <p className="text-gray-500 text-sm">Date</p>
+                <p>{new Date(selectedContact.createdAt).toLocaleString()}</p>
+              </div>
+
+            </div>
 
             <button
               onClick={() => setSelectedContact(null)}
-              className="mt-6 px-4 py-2 bg-gray-200 rounded-lg"
+              className="mt-6 w-full py-3 bg-gray-200 hover:bg-gray-300 rounded-lg font-semibold"
             >
               Close
             </button>
+
           </div>
+
         </div>
       )}
+
     </div>
   )
 }
