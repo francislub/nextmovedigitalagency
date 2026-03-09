@@ -136,12 +136,12 @@ export default function LoginPage() {
         </div>
 
         {/* Register Link */}
-        <p className="text-center mt-8 text-foreground/60">
+        {/* <p className="text-center mt-8 text-foreground/60">
           Don't have an account?{' '}
           <Link href="/register-invite" className="text-primary hover:text-secondary font-semibold">
             Request an invite
           </Link>
-        </p>
+        </p> */}
       </div>
     </main>
   )
