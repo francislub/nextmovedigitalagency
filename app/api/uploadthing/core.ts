@@ -1,3 +1,4 @@
+// app/api/uploadthing/core.ts
 import { f } from "@/lib/uploadthing"
 
 export const uploadRouter = {

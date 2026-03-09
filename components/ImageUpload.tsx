@@ -25,7 +25,6 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
             fill
             className="object-cover"
           />
-
           <button
             type="button"
             onClick={() => onChange(null)}
@@ -45,17 +44,13 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
             </div>
           )}
 
-          <UploadDropzone<UploadRouter>
+          <UploadDropzone<UploadRouter, "productImage">
             endpoint="productImage"
-            onUploadBegin={() => {
-              setIsUploading(true)
-            }}
+            onUploadBegin={() => setIsUploading(true)}
             onClientUploadComplete={(res) => {
               setIsUploading(false)
               const file = res?.[0]
-              if (file?.url) {
-                onChange(file.url)
-              }
+              if (file?.url) onChange(file.url)
             }}
             onUploadError={(error) => {
               setIsUploading(false)
