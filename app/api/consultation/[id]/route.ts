@@ -33,28 +33,50 @@ export async function PATCH(
   }
 }
 
-export async function GET(
-  request: NextRequest,
+// DELETE /api/consultation/:id
+export async function DELETE(
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: 'ID is required' }, { status: 400 })
+    }
+
+    const deleted = await prisma.scheduleConsultation.delete({
+      where: { id },
+    })
+
+    return NextResponse.json({ success: true, deleted })
+  } catch (error) {
+    console.error('Delete consultation error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete consultation' },
+      { status: 500 }
+    )
+  }
+}
+
+// GET /api/consultation/:id (optional for view details)
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params
     const consultation = await prisma.scheduleConsultation.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!consultation) {
-      return NextResponse.json(
-        { error: 'Consultation not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Consultation not found' }, { status: 404 })
     }
 
     return NextResponse.json(consultation)
   } catch (error) {
-    console.error('[v0] Get consultation error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch consultation' },
-      { status: 500 }
-    )
+    console.error('Fetch single consultation error:', error)
+    return NextResponse.json({ error: 'Failed to fetch consultation' }, { status: 500 })
   }
 }
