@@ -131,19 +131,28 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// GET all consultations
 export async function GET() {
   try {
     const consultations = await prisma.scheduleConsultation.findMany({
       orderBy: { createdAt: 'desc' },
-      take: 50,
     })
-
     return NextResponse.json(consultations)
   } catch (error) {
-    console.error('[v0] Get consultations error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch consultations' },
-      { status: 500 }
-    )
+    console.error('Fetch consultations error:', error)
+    return NextResponse.json({ error: 'Failed to fetch consultations' }, { status: 500 })
+  }
+}
+
+// DELETE consultation
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const deleted = await prisma.scheduleConsultation.delete({
+      where: { id: params.id },
+    })
+    return NextResponse.json({ success: true, deleted })
+  } catch (error) {
+    console.error('Delete consultation error:', error)
+    return NextResponse.json({ success: false, error: 'Failed to delete consultation' }, { status: 500 })
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Calendar, Trash2, Check, X, Search } from 'lucide-react'
+import { Calendar, Trash2, Search, Eye } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Consultation {
@@ -14,7 +14,6 @@ interface Consultation {
   preferredDate?: string
   preferredTime?: string
   message?: string
-  status: string
   createdAt: string
 }
 
@@ -24,17 +23,17 @@ export default function ConsultationsPage() {
   const [search, setSearch] = useState('')
   const [selectedConsult, setSelectedConsult] = useState<Consultation | null>(null)
 
+  // Fetch consultations
   useEffect(() => {
     async function fetchConsultations() {
       try {
-        const response = await fetch('/api/consultation')
-        const data = await response.json()
+        const res = await fetch('/api/consultation')
+        const data = await res.json()
         setConsultations(data || [])
       } finally {
         setLoading(false)
       }
     }
-
     fetchConsultations()
   }, [])
 
@@ -45,23 +44,22 @@ export default function ConsultationsPage() {
       c.serviceType.toLowerCase().includes(search.toLowerCase())
   )
 
-  const updateStatus = async (id: string, newStatus: string) => {
+  // Delete consultation
+  const deleteConsultation = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this consultation?')) return
+
     try {
-      const response = await fetch(`/api/consultation/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      })
+      const res = await fetch(`/api/consultation/${id}`, { method: 'DELETE' })
+      const data = await res.json()
 
-      if (!response.ok) {
-        toast.error('Failed to update status')
-        return
+      if (data.success) {
+        setConsultations((prev) => prev.filter((c) => c.id !== id))
+        toast.success('Consultation deleted')
+      } else {
+        toast.error('Failed to delete consultation')
       }
-
-      setConsultations(consultations.map(c => c.id === id ? { ...c, status: newStatus } : c))
-      toast.success(`Status updated to ${newStatus}`)
     } catch (error) {
-      console.error('[v0] Update status error:', error)
+      console.error('Delete error:', error)
       toast.error('An error occurred')
     }
   }
@@ -99,7 +97,7 @@ export default function ConsultationsPage() {
         </div>
       </div>
 
-      {/* Consultations Grid */}
+      {/* Consultation Grid */}
       {filteredConsultations.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border/50">
           <Calendar size={48} className="mx-auto mb-4 text-foreground/40" />
@@ -111,19 +109,14 @@ export default function ConsultationsPage() {
             <div
               key={consult.id}
               className="bg-card rounded-xl border border-border/50 p-6 hover:border-primary/50 transition-all cursor-pointer"
-              onClick={() => setSelectedConsult(consult)}
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="font-bold text-lg">{consult.fullName}</h3>
                   <p className="text-sm text-foreground/60">{consult.serviceType}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                  consult.status === 'pending' ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' :
-                  consult.status === 'confirmed' ? 'bg-green-500/20 text-green-600 dark:text-green-400' :
-                  'bg-gray-500/20 text-gray-600 dark:text-gray-400'
-                }`}>
-                  {consult.status.charAt(0).toUpperCase() + consult.status.slice(1)}
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-500/20 text-gray-600">
+                  {new Date(consult.createdAt).toLocaleDateString()}
                 </span>
               </div>
 
@@ -131,34 +124,21 @@ export default function ConsultationsPage() {
                 <p className="text-foreground/70">{consult.email}</p>
                 <p className="text-foreground/70">{consult.phone}</p>
                 {consult.company && <p className="text-foreground/70">{consult.company}</p>}
-                {consult.preferredDate && (
-                  <p className="text-foreground/70 flex items-center gap-2">
-                    <Calendar size={16} />
-                    {new Date(consult.preferredDate).toLocaleDateString()} {consult.preferredTime}
-                  </p>
-                )}
               </div>
 
               <div className="flex gap-2">
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    updateStatus(consult.id, 'confirmed')
-                  }}
-                  className="flex-1 py-2 px-3 bg-green-500/20 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-500/30 transition-colors font-medium text-sm flex items-center justify-center gap-2"
+                  onClick={() => setSelectedConsult(consult)}
+                  className="flex-1 py-2 px-3 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 font-medium text-sm flex items-center justify-center gap-2"
                 >
-                  <Check size={16} />
-                  Confirm
+                  <Eye size={16} /> View
                 </button>
+
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    updateStatus(consult.id, 'cancelled')
-                  }}
-                  className="flex-1 py-2 px-3 bg-destructive/20 text-destructive rounded-lg hover:bg-destructive/30 transition-colors font-medium text-sm flex items-center justify-center gap-2"
+                  onClick={() => deleteConsultation(consult.id)}
+                  className="flex-1 py-2 px-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 font-medium text-sm flex items-center justify-center gap-2"
                 >
-                  <X size={16} />
-                  Decline
+                  <Trash2 size={16} /> Delete
                 </button>
               </div>
             </div>
@@ -172,37 +152,17 @@ export default function ConsultationsPage() {
           <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4">{selectedConsult.fullName}</h2>
             <div className="space-y-4">
-              <div>
-                <p className="text-sm text-foreground/60">Email</p>
-                <p className="font-medium">{selectedConsult.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-foreground/60">Phone</p>
-                <p className="font-medium">{selectedConsult.phone}</p>
-              </div>
-              <div>
-                <p className="text-sm text-foreground/60">Service Type</p>
-                <p className="font-medium">{selectedConsult.serviceType}</p>
-              </div>
-              {selectedConsult.company && (
-                <div>
-                  <p className="text-sm text-foreground/60">Company</p>
-                  <p className="font-medium">{selectedConsult.company}</p>
-                </div>
-              )}
+              <p><strong>Email:</strong> {selectedConsult.email}</p>
+              <p><strong>Phone:</strong> {selectedConsult.phone}</p>
+              <p><strong>Service Type:</strong> {selectedConsult.serviceType}</p>
+              {selectedConsult.company && <p><strong>Company:</strong> {selectedConsult.company}</p>}
               {selectedConsult.preferredDate && (
-                <div>
-                  <p className="text-sm text-foreground/60">Preferred Date & Time</p>
-                  <p className="font-medium">
-                    {new Date(selectedConsult.preferredDate).toLocaleDateString()} {selectedConsult.preferredTime}
-                  </p>
-                </div>
+                <p>
+                  <strong>Preferred Date & Time:</strong> {new Date(selectedConsult.preferredDate).toLocaleDateString()} {selectedConsult.preferredTime}
+                </p>
               )}
               {selectedConsult.message && (
-                <div>
-                  <p className="text-sm text-foreground/60">Message</p>
-                  <p className="mt-2 text-foreground/80 bg-secondary/10 p-4 rounded-lg">{selectedConsult.message}</p>
-                </div>
+                <p className="mt-2 bg-secondary/10 p-4 rounded-lg">{selectedConsult.message}</p>
               )}
             </div>
             <button
