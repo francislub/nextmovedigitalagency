@@ -66,13 +66,25 @@ export function Footer() {
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
                   alt="NextMove"
-                  className="block dark:hidden w-20 h-10 object-contain"
+                  className="block dark:hidden 
+                  w-24 h-12 
+                  sm:w-28 sm:h-14 
+                  md:w-32 md:h-16 
+                  lg:w-40 lg:h-20 
+                  xl:w-48 xl:h-24 
+                  object-contain"
                 />
 
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
                   alt="NextMove"
-                  className="hidden dark:block w-20 h-10 object-contain"
+                  className="block dark:hidden 
+                  w-24 h-12 
+                  sm:w-28 sm:h-14 
+                  md:w-32 md:h-16 
+                  lg:w-40 lg:h-20 
+                  xl:w-48 xl:h-24 
+                  object-contain"
                 />
 
               </Link>
