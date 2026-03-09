@@ -14,6 +14,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if email already exists in TeamMember
+    const existingTeamMember = await prisma.teamMember.findUnique({
+      where: { activeEmail: email },
+    })
+
+    if (existingTeamMember) {
+      return NextResponse.json(
+        { error: 'Email already exists. This person is already registered as a team member.' },
+        { status: 400 }
+      )
+    }
+
     // Check if already invited
     const existingInvite = await prisma.teamInvite.findUnique({
       where: { email },
@@ -22,6 +34,13 @@ export async function POST(request: NextRequest) {
     if (existingInvite && existingInvite.status === 'accepted') {
       return NextResponse.json(
         { error: 'User already registered' },
+        { status: 400 }
+      )
+    }
+
+    if (existingInvite && existingInvite.status === 'pending') {
+      return NextResponse.json(
+        { error: 'Invitation already sent to this email. Please check your inbox.' },
         { status: 400 }
       )
     }

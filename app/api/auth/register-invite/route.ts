@@ -54,6 +54,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if email already exists in TeamMember
+    const existingEmailMember = await prisma.teamMember.findUnique({
+      where: { activeEmail },
+    })
+
+    if (existingEmailMember) {
+      return NextResponse.json(
+        { error: 'This email is already registered. Please use a different email.' },
+        { status: 400 }
+      )
+    }
+
+    // Check if phone already exists in TeamMember (if provided)
+    if (activePhone) {
+      const existingPhoneMember = await prisma.teamMember.findUnique({
+        where: { activePhone },
+      })
+
+      if (existingPhoneMember) {
+        return NextResponse.json(
+          { error: 'This phone number is already registered. Please use a different phone number.' },
+          { status: 400 }
+        )
+      }
+    }
+
     // Create team member with all fields
     const teamMember = await prisma.teamMember.create({
       data: {

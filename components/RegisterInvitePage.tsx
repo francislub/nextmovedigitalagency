@@ -29,10 +29,12 @@ export default function RegisterInvitePage() {
 
   const [step, setStep] = useState<'request' | 'register'>('request')
   const [loading, setLoading] = useState(false)
+  const [inviteLoading, setInviteLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [roles, setRoles] = useState<Array<{ id: string; name: string }>>([])
-  
+  const [inviteEmail, setInviteEmail] = useState<string>('')
+  const [tokenError, setTokenError] = useState<string>('')
   const [registerData, setRegisterData] = useState<RegistrationData>({
     name: '',
     image: null,
@@ -52,8 +54,36 @@ export default function RegisterInvitePage() {
     if (token) {
       setStep('register')
       loadRoles()
+      loadInviteEmail()
     }
   }, [token])
+
+  const loadInviteEmail = async () => {
+    if (!token) return
+    
+    setInviteLoading(true)
+    try {
+      const response = await fetch(`/api/auth/verify-invite?token=${token}`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        setTokenError(data.error || 'Invalid invitation link')
+        setInviteLoading(false)
+        return
+      }
+
+      setInviteEmail(data.email)
+      setRegisterData((prev) => ({
+        ...prev,
+        activeEmail: data.email,
+      }))
+      setInviteLoading(false)
+    } catch (error) {
+      console.error('[v0] Load invite error:', error)
+      setTokenError('Failed to load invitation details')
+      setInviteLoading(false)
+    }
+  }
 
   const loadRoles = async () => {
     try {
@@ -200,17 +230,42 @@ export default function RegisterInvitePage() {
     )
   }
 
-  // Invalid token
-  if (!token) {
+  // Invalid token or token error
+  if (!token || tokenError) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4">
+      <main className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-background to-secondary/10">
         <div className="text-center max-w-md">
-          <AlertCircle size={48} className="mx-auto mb-4 text-destructive" />
-          <h1 className="text-2xl font-bold mb-2">Invalid Link</h1>
-          <p className="text-foreground/60 mb-6">The invitation link is invalid or expired.</p>
-          <Link href="/register-invite" className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium inline-block hover:bg-primary/90 transition-colors">
-            Request New Invite
-          </Link>
+          <div className="bg-card rounded-2xl border border-destructive/30 p-8 shadow-lg">
+            <AlertCircle size={48} className="mx-auto mb-4 text-destructive" />
+            <h1 className="text-2xl font-bold mb-2">Invalid Invitation</h1>
+            <p className="text-foreground/60 mb-2">{tokenError || 'The invitation link is invalid or expired.'}</p>
+            <p className="text-sm text-foreground/50 mb-6">You can request a new invitation below:</p>
+            
+            <div className="bg-secondary/5 border border-border/20 rounded-lg p-4 mb-6">
+              <form onSubmit={handleRequestInvite} className="space-y-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none text-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={loading || !email}
+                  className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+                >
+                  {loading && <Loader size={16} className="animate-spin" />}
+                  {loading ? 'Sending...' : 'Request Invitation'}
+                </button>
+              </form>
+            </div>
+
+            <Link href="/register-invite" className="text-primary hover:text-secondary font-medium text-sm">
+              Back to invitation request
+            </Link>
+          </div>
         </div>
       </main>
     )
@@ -244,6 +299,31 @@ export default function RegisterInvitePage() {
     )
   }
 
+  // Loading invite verification
+  if (inviteLoading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-2xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">Loading Your Invitation</h1>
+            <p className="text-foreground/60">Please wait while we verify your invitation...</p>
+          </div>
+
+          <div className="bg-card rounded-2xl border border-border/50 p-8 shadow-lg">
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-4 bg-background/50 rounded w-24 animate-pulse" />
+                  <div className="h-10 bg-background/50 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+    )
+  }
+
   // Registration Form
   return (
     <main className="min-h-screen bg-gradient-to-br from-background to-secondary/10 flex items-center justify-center px-4 py-8">
@@ -268,17 +348,20 @@ export default function RegisterInvitePage() {
               />
             </div>
 
-            {/* Active Email */}
+            {/* Active Email - Read Only from Invite */}
             <div>
-              <label className="block text-sm font-medium mb-2">Active Email *</label>
+              <label className="block text-sm font-medium mb-2">
+                Registered Email *
+                <span className="text-xs font-normal text-foreground/60 ml-2">(from invitation)</span>
+              </label>
               <input
                 type="email"
                 value={registerData.activeEmail}
-                onChange={(e) => setRegisterData({ ...registerData, activeEmail: e.target.value })}
-                placeholder="you@example.com"
-                required
-                className="w-full px-4 py-2.5 rounded-lg border border-border bg-background/50 focus:border-primary focus:outline-none transition-colors text-sm"
+                readOnly
+                disabled
+                className="w-full px-4 py-2.5 rounded-lg border border-border bg-background/20 focus:border-primary focus:outline-none transition-colors text-sm opacity-75 cursor-not-allowed"
               />
+              <p className="text-xs text-foreground/60 mt-1">This email is set from your invitation and cannot be changed</p>
             </div>
 
             {/* Active Phone */}
