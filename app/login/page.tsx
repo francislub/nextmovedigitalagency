@@ -128,20 +128,9 @@ export default function LoginPage() {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-
-          {/* No Password Notice */}
-          <p className="text-center text-sm text-foreground/60 mt-6">
-            No password required - we'll send you a magic link
-          </p>
         </div>
 
         {/* Register Link */}
-        {/* <p className="text-center mt-8 text-foreground/60">
-          Don't have an account?{' '}
-          <Link href="/register-invite" className="text-primary hover:text-secondary font-semibold">
-            Request an invite
-          </Link>
-        </p> */}
       </div>
     </main>
   )

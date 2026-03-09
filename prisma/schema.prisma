@@ -29,8 +29,8 @@ model TeamMember {
   name        String
   image       String?
   description String?
-  activeEmail String?
-  activePhone String?
+  activeEmail String @unique
+  activePhone String @unique
   mainRole    String  @default("admin")
   active      Boolean @default(true)
 

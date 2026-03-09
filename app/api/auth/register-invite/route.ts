@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { generateToken } from '@/lib/auth'
+import { sendTeamMemberWelcomeEmail, sendAdminTeamMemberNotificationEmail } from '@/lib/team-emails'
 
 export async function POST(request: NextRequest) {
   try {
@@ -103,7 +104,44 @@ export async function POST(request: NextRequest) {
       phone: login.phone,
     })
 
-    // Notify admin
+    // Send welcome email to new team member
+    try {
+      await sendTeamMemberWelcomeEmail(activeEmail, {
+        name,
+        activeEmail,
+        activePhone,
+      })
+    } catch (emailError) {
+      console.error('[v0] Welcome email error:', emailError)
+    }
+
+    // Send admin notification emails
+    try {
+      const admins = await prisma.teamMember.findMany({
+        where: { mainRole: 'admin' },
+        select: { activeEmail: true },
+      })
+
+      for (const admin of admins) {
+        if (admin.activeEmail) {
+          try {
+            await sendAdminTeamMemberNotificationEmail(admin.activeEmail, {
+              name,
+              activeEmail,
+              activePhone,
+              description,
+              image,
+            })
+          } catch (adminEmailError) {
+            console.error('[v0] Admin notification email error:', adminEmailError)
+          }
+        }
+      }
+    } catch (adminError) {
+      console.error('[v0] Admin notification error:', adminError)
+    }
+
+    // Notify admin via database
     await prisma.notification.create({
       data: {
         type: 'team-member-joined',
