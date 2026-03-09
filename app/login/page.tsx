@@ -53,12 +53,12 @@ export default function LoginPage() {
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove"
-              className="h-12 w-auto dark:hidden"
+              className="sm:max-w-[150px] md:max-w-[200px] lg:max-w-[200px] h-auto object-contain dark:hidden"
             />
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/black-iXsseJTvyXimXjpRcnVLUKTT4S6pv2.png"
               alt="NextMove"
-              className="h-12 w-auto hidden dark:block"
+              className="sm:max-w-[150px] md:max-w-[200px] lg:max-w-[200px] h-auto object-contain hidden dark:block"
             />
           </Link>
           <h1 className="text-3xl font-bold mb-2">Team Portal</h1>
