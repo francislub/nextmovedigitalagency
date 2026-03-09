@@ -10,16 +10,14 @@ export async function POST(request: NextRequest) {
       email,
       phone,
       company,
-      industry,
-      budget,
-      services,
-      description,
+      serviceType,
+      message,
       preferredDate,
       preferredTime,
     } = await request.json()
 
     // Validate required fields
-    if (!fullName || !email || !phone || !services || services.length === 0) {
+    if (!fullName || !email || !phone || !serviceType) {
       return NextResponse.json(
         { error: 'Required fields missing' },
         { status: 400 }
@@ -46,13 +44,13 @@ export async function POST(request: NextRequest) {
         fullName,
         email,
         phone,
-        company,
-        industry,
-        budget,
-        services: Array.isArray(services) ? services.join(', ') : services,
-        description,
+        company: company || undefined,
+        serviceType,
+        message: message || undefined,
         preferredDate: preferredDate ? new Date(preferredDate) : null,
-        preferredTime,
+        preferredTime: preferredTime || undefined,
+        status: 'pending',
+        notified: false,
       },
     })
 
@@ -62,7 +60,7 @@ export async function POST(request: NextRequest) {
         fullName,
         email,
         phone,
-        services: services.join(', '),
+        serviceType,
         preferredDate,
         preferredTime,
       })
@@ -70,17 +68,48 @@ export async function POST(request: NextRequest) {
       console.error('[v0] Email send error:', error)
     }
 
-    // Notify admin
+    // Send admin notification email
+    try {
+      const adminEmails = await prisma.teamMember.findMany({
+        where: { mainRole: 'admin' },
+        select: { activeEmail: true },
+      })
+
+      if (adminEmails.length > 0) {
+        const { sendAdminNotification } = await import('@/lib/email')
+        for (const admin of adminEmails) {
+          if (admin.activeEmail) {
+            await sendAdminNotification(admin.activeEmail, {
+              type: 'consultation',
+              fullName,
+              email,
+              phone,
+              company,
+              serviceType,
+              preferredDate,
+              preferredTime,
+              message,
+            })
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[v0] Admin notification error:', error)
+    }
+
+    // Create notification record
     try {
       await prisma.notification.create({
         data: {
           type: 'consultation-scheduled',
           title: 'New Consultation Scheduled',
-          message: `${fullName} scheduled a consultation for ${services.join(', ')}`,
+          message: `${fullName} scheduled a consultation for ${serviceType}`,
           data: JSON.stringify({
             consultationId: consultation.id,
             email,
-            services,
+            serviceType,
+            preferredDate,
+            preferredTime,
           }),
         },
       })

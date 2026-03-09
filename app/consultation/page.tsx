@@ -15,23 +15,18 @@ export default function ConsultationPage() {
     email: '',
     phone: '',
     company: '',
-    industry: '',
-    budget: '',
-    services: [] as string[],
-    description: '',
+    serviceType: '',
+    message: '',
     preferredDate: '',
     preferredTime: '',
   })
 
-  const services = [
-    'Web Design',
-    'Brand Building',
-    'Content Creation',
-    'Social Media Marketing',
-    'SEO Optimization',
-    'E-commerce Development',
-    'Mobile App Development',
-    'Digital Strategy',
+  const serviceTypes = [
+    { value: 'web-design', label: 'Web Design & Development' },
+    { value: 'branding', label: 'Branding & Identity' },
+    { value: 'content', label: 'Content Creation & Strategy' },
+    { value: 'social-media', label: 'Social Media Marketing' },
+    { value: 'seo', label: 'SEO Optimization' },
   ]
 
   const budgets = [
@@ -58,20 +53,11 @@ export default function ConsultationPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleServiceToggle = (service: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      services: prev.services.includes(service)
-        ? prev.services.filter((s) => s !== service)
-        : [...prev.services, service],
-    }))
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (step === 'details') {
-      if (!formData.fullName || !formData.email || !formData.phone || formData.services.length === 0) {
+      if (!formData.fullName || !formData.email || !formData.phone || !formData.serviceType) {
         toast.error('Please fill in all required fields')
         return
       }
@@ -291,54 +277,35 @@ export default function ConsultationPage() {
                       </select>
                     </div>
 
-                    {/* Services Needed */}
-                    <div>
-                      <label className="block text-sm font-semibold text-foreground mb-4">
-                        Services of Interest *
-                      </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {services.map((service) => (
-                          <label key={service} className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 cursor-pointer transition-all">
-                            <input
-                              type="checkbox"
-                              checked={formData.services.includes(service)}
-                              onChange={() => handleServiceToggle(service)}
-                              className="w-4 h-4 rounded border-border"
-                            />
-                            <span className="text-sm">{service}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Budget */}
+                    {/* Service Type */}
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">
-                        Budget Range
+                        Service Type *
                       </label>
                       <select
-                        name="budget"
-                        value={formData.budget}
+                        name="serviceType"
+                        value={formData.serviceType}
                         onChange={handleChange}
                         className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:border-primary focus:outline-none transition-colors"
+                        required
                       >
-                        <option value="">Select a budget range</option>
-                        {budgets.map((budget) => (
-                          <option key={budget} value={budget}>
-                            {budget}
+                        <option value="">Select a service</option>
+                        {serviceTypes.map((service) => (
+                          <option key={service.value} value={service.value}>
+                            {service.label}
                           </option>
                         ))}
                       </select>
                     </div>
 
-                    {/* Description */}
+                    {/* Message / Project Details */}
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">
                         Tell us about your project
                       </label>
                       <textarea
-                        name="description"
-                        value={formData.description}
+                        name="message"
+                        value={formData.message}
                         onChange={handleChange}
                         placeholder="What are your main goals and challenges?"
                         rows={4}
@@ -442,8 +409,10 @@ export default function ConsultationPage() {
                       </div>
 
                       <div className="pt-4 border-t border-primary/20">
-                        <p className="text-foreground/60 text-sm mb-1">Services</p>
-                        <p className="font-semibold">{formData.services.join(', ')}</p>
+                        <p className="text-foreground/60 text-sm mb-1">Service Type</p>
+                        <p className="font-semibold">
+                          {serviceTypes.find((s) => s.value === formData.serviceType)?.label || formData.serviceType}
+                        </p>
                       </div>
 
                       <div className="pt-4 border-t border-primary/20">

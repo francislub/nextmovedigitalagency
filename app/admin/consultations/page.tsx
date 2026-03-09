@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Calendar, Trash2, Check, X, Search } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 interface Consultation {
   id: string
@@ -45,8 +46,24 @@ export default function ConsultationsPage() {
   )
 
   const updateStatus = async (id: string, newStatus: string) => {
-    // Mock update - implement with real API
-    setConsultations(consultations.map(c => c.id === id ? { ...c, status: newStatus } : c))
+    try {
+      const response = await fetch(`/api/consultation/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (!response.ok) {
+        toast.error('Failed to update status')
+        return
+      }
+
+      setConsultations(consultations.map(c => c.id === id ? { ...c, status: newStatus } : c))
+      toast.success(`Status updated to ${newStatus}`)
+    } catch (error) {
+      console.error('[v0] Update status error:', error)
+      toast.error('An error occurred')
+    }
   }
 
   if (loading) {
