@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Calendar, Trash2, Search, Eye } from 'lucide-react'
+import { Calendar, Trash2, Eye, Search } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Consultation {
@@ -77,13 +77,11 @@ export default function ConsultationsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-4xl font-bold">Scheduled Consultations</h1>
         <p className="text-foreground/60 mt-2">Manage all consultation requests</p>
       </div>
 
-      {/* Search */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-3 text-foreground/40" size={20} />
@@ -97,7 +95,6 @@ export default function ConsultationsPage() {
         </div>
       </div>
 
-      {/* Consultation Grid */}
       {filteredConsultations.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border/50">
           <Calendar size={48} className="mx-auto mb-4 text-foreground/40" />
@@ -108,7 +105,7 @@ export default function ConsultationsPage() {
           {filteredConsultations.map((consult) => (
             <div
               key={consult.id}
-              className="bg-card rounded-xl border border-border/50 p-6 hover:border-primary/50 transition-all cursor-pointer"
+              className="bg-card rounded-xl border border-border/50 p-6 hover:border-primary/50 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -146,7 +143,6 @@ export default function ConsultationsPage() {
         </div>
       )}
 
-      {/* Detail Modal */}
       {selectedConsult && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
