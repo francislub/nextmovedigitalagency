@@ -95,7 +95,7 @@ export function TeamSection() {
             const roleDisplay =
               member.roles && member.roles.length > 0
                 ? member.roles.map((r) => r.name).join(', ')
-                : 'Team Member'
+                : ''
 
             return (
               <div
