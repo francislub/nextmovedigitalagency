@@ -1,44 +1,31 @@
-// app/api/team/route.ts
-
 import { NextResponse } from "next/server"
 import {prisma} from "@/lib/prisma"
 
 export async function GET() {
-  console.log("🚀 /api/team request received")
+  console.log("🚀 Fetching team members")
 
   try {
-
     const team = await prisma.teamMember.findMany({
       where: {
-        active: true
+        active: true,
       },
       include: {
-        roles: {
-          select: {
-            id: true,
-            name: true,
-            description: true
-          }
-        }
+        roles: true, // VERY IMPORTANT
       },
       orderBy: {
-        createdAt: "desc"
-      }
+        createdAt: "desc",
+      },
     })
 
-    console.log("✅ Team fetched:", team.length)
+    console.log("✅ Team members:", team)
 
     return NextResponse.json(team)
 
   } catch (error) {
-
-    console.error("❌ Failed to fetch team:", error)
+    console.error("❌ Error fetching team:", error)
 
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to fetch team members"
-      },
+      { error: "Failed to fetch team members" },
       { status: 500 }
     )
   }

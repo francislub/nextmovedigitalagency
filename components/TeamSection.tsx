@@ -93,9 +93,9 @@ export function TeamSection() {
             const isVisible = visibleCards.includes(index)
 
             const roleDisplay =
-              member.roles && member.roles.length > 0
-                ? member.roles.map((r) => r.name).join(', ')
-                : ''
+              member.roles?.length
+                ? member.roles.map((r) => r.name).join(", ")
+                : member.mainRole
 
             return (
               <div
