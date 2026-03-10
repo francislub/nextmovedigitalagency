@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Linkedin, Twitter, Mail, Github, Instagram, Globe, Eye } from 'lucide-react'
 
+interface Role {
+  name: string
+  description?: string
+}
+
 interface TeamMember {
   id: string
   name: string
@@ -18,7 +23,7 @@ interface TeamMember {
   linkedinLink?: string
   instagramLink?: string
   websiteLink?: string
-  roles?: { name: string; description?: string }[]
+  roles?: Role[]
 }
 
 export function TeamSection() {
@@ -87,6 +92,11 @@ export function TeamSection() {
           {teamMembers.map((member, index) => {
             const isVisible = visibleCards.includes(index)
 
+            const roleDisplay =
+              member.roles && member.roles.length > 0
+                ? member.roles.map((r) => r.name).join(', ')
+                : 'Team Member'
+
             return (
               <div
                 key={member.id}
@@ -124,9 +134,9 @@ export function TeamSection() {
                     {member.name}
                   </h3>
 
-                  {/* Role */}
+                  {/* Roles instead of mainRole */}
                   <p className="text-sm font-semibold text-primary text-center mb-2">
-                    {member.mainRole}
+                    {roleDisplay}
                   </p>
 
                   {/* Description (2 lines only) */}
@@ -234,9 +244,12 @@ export function TeamSection() {
               {selectedMember.name}
             </h2>
 
-            <p className="text-lg text-primary text-center mb-4">
-              {selectedMember.mainRole}
-            </p>
+            {/* Roles */}
+            {selectedMember.roles && (
+              <p className="text-lg text-primary text-center mb-4">
+                {selectedMember.roles.map((r) => r.name).join(', ')}
+              </p>
+            )}
 
             {/* FULL DESCRIPTION */}
             <p className="text-sm text-foreground/70 mb-6 leading-relaxed">
