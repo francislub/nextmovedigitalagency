@@ -6,9 +6,17 @@ import { Plus, Edit, Trash2, Eye, Mail, Phone, Github, Linkedin, Twitter, X } fr
 import { ImageUpload } from "@/components/ui/image-upload"
 import { TeamMember as TeamMemberType } from "@prisma/client"
 
+interface Role {
+  id: string
+  name: string
+}
+
 export default function TeamPage() {
+
   const [team, setTeam] = useState<TeamMemberType[]>([])
+  const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
+
   const [isOpen, setIsOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [selectedMember, setSelectedMember] = useState<TeamMemberType | null>(null)
@@ -28,62 +36,117 @@ export default function TeamPage() {
     roleIds: [] as string[]
   })
 
-  // Fetch team members
+  // Fetch team + roles
   useEffect(() => {
-    async function fetchTeam() {
+
+    async function fetchData() {
       try {
-        const res = await fetch("/api/admin/team")
-        const data = await res.json()
-        setTeam(data)
+
+        const [teamRes, rolesRes] = await Promise.all([
+          fetch("/api/admin/team"),
+          fetch("/api/admin/roles")
+        ])
+
+        const teamData = await teamRes.json()
+        const roleData = await rolesRes.json()
+
+        setTeam(teamData)
+        setRoles(roleData)
+
       } catch (error) {
         console.error(error)
       } finally {
         setLoading(false)
       }
     }
-    fetchTeam()
+
+    fetchData()
+
   }, [])
 
-  // Add / Edit
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const method = editingId ? "PUT" : "POST"
-      const url = "/api/admin/team"
+  // Toggle role selection
+  const toggleRole = (id: string) => {
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingId ? { ...formData, id: editingId } : formData),
+    const exists = formData.roleIds.includes(id)
+
+    if (exists) {
+      setFormData({
+        ...formData,
+        roleIds: formData.roleIds.filter(r => r !== id)
       })
-      const data = await res.json()
-
-      if (res.ok) {
-        if (editingId) {
-          setTeam(team.map(m => m.id === editingId ? data : m))
-          toast.success("Team member updated!")
-        } else {
-          setTeam([data, ...team])
-          toast.success("Team member added!")
-        }
-        setIsOpen(false)
-        setEditingId(null)
-        setFormData({
-          name: '', description: '', activeEmail: '', activePhone: '', mainRole: 'admin',
-          image: '', githubLink: '', twitterLink: '', linkedinLink: '',
-          instagramLink: '', websiteLink: '', roleIds: []
-        })
-      } else {
-        toast.error(data.error || "Failed to save")
-      }
-    } catch (error) {
-      console.error(error)
-      toast.error("Something went wrong")
+    } else {
+      setFormData({
+        ...formData,
+        roleIds: [...formData.roleIds, id]
+      })
     }
   }
 
-  // Edit member
+  // Submit form
+  const handleSubmit = async (e: React.FormEvent) => {
+
+    e.preventDefault()
+
+    try {
+
+      const method = editingId ? "PUT" : "POST"
+
+      const res = await fetch("/api/admin/team", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          editingId ? { ...formData, id: editingId } : formData
+        ),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        toast.error(data.error || "Failed")
+        return
+      }
+
+      if (editingId) {
+
+        setTeam(team.map(m => m.id === editingId ? data : m))
+        toast.success("Member updated")
+
+      } else {
+
+        setTeam([data, ...team])
+        toast.success("Member added")
+
+      }
+
+      setIsOpen(false)
+      setEditingId(null)
+
+      setFormData({
+        name: '',
+        description: '',
+        activeEmail: '',
+        activePhone: '',
+        mainRole: 'admin',
+        image: '',
+        githubLink: '',
+        twitterLink: '',
+        linkedinLink: '',
+        instagramLink: '',
+        websiteLink: '',
+        roleIds: []
+      })
+
+    } catch (error) {
+
+      console.error(error)
+      toast.error("Something went wrong")
+
+    }
+  }
+
+  // Edit
   const handleEdit = (member: TeamMemberType) => {
+
     setFormData({
       name: member.name,
       description: member.description || '',
@@ -98,167 +161,295 @@ export default function TeamPage() {
       websiteLink: member.websiteLink || '',
       roleIds: member.roleIds || []
     })
+
     setEditingId(member.id)
     setIsOpen(true)
   }
 
-  // Delete member
+  // Delete
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this team member?")) return
+
+    if (!confirm("Delete this member?")) return
+
     try {
+
       const res = await fetch("/api/admin/team/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       })
+
       const data = await res.json()
+
       if (data.success) {
         setTeam(team.filter(m => m.id !== id))
-        toast.success("Team member removed!")
-      } else {
-        toast.error(data.error || "Failed to delete")
+        toast.success("Deleted")
       }
-    } catch (error) {
-      console.error(error)
-      toast.error("Something went wrong")
+
+    } catch {
+      toast.error("Delete failed")
     }
   }
 
   if (loading) return <p>Loading...</p>
 
   return (
+
     <div className="space-y-6">
+
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+      <div className="flex justify-between items-center">
+
         <div>
           <h1 className="text-4xl font-bold">Team Members</h1>
-          <p className="text-foreground/60 mt-2">Manage your team and permissions</p>
+          <p className="text-foreground/60 mt-2">Manage your team</p>
         </div>
-        <button onClick={() => { 
-          setIsOpen(true); 
-          setEditingId(null); 
-          setFormData({
-            name: '', description: '', activeEmail: '', activePhone: '', mainRole: 'admin',
-            image: '', githubLink: '', twitterLink: '', linkedinLink: '',
-            instagramLink: '', websiteLink: '', roleIds: []
-          })
-        }}
-        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg transition-all">
-          <Plus size={20}/> Add Member
+
+        <button
+          onClick={() => {
+            setIsOpen(true)
+            setEditingId(null)
+          }}
+          className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg"
+        >
+          <Plus size={18}/> Add Member
         </button>
+
       </div>
 
-      {/* Team Grid */}
+      {/* Team grid */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         {team.map(member => (
-          <div key={member.id} className="bg-card rounded-xl border border-border/50 p-6 hover:border-primary/50 transition-all">
-            {member.image && <img src={member.image} alt={member.name} className="w-16 h-16 rounded-full mb-4 object-cover" />}
+
+          <div
+            key={member.id}
+            className="bg-card border rounded-xl p-6 space-y-3"
+          >
+
+            {member.image && (
+              <img
+                src={member.image}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+            )}
+
             <h3 className="text-xl font-bold">{member.name}</h3>
-            <p className="text-sm text-foreground/60 mb-4">{member.description}</p>
 
-            <div className="space-y-2 mb-4 text-sm">
-              {member.activeEmail && <div className="flex items-center gap-2"><Mail size={16}/> {member.activeEmail}</div>}
-              {member.activePhone && <div className="flex items-center gap-2"><Phone size={16}/> {member.activePhone}</div>}
-            </div>
+            {/* 2 line description */}
 
-            <div className="flex gap-2 mb-4">
-              {member.githubLink && <a href={member.githubLink} target="_blank" className="p-2 hover:bg-secondary/20 rounded-lg"><Github size={18}/></a>}
-              {member.twitterLink && <a href={member.twitterLink} target="_blank" className="p-2 hover:bg-secondary/20 rounded-lg"><Twitter size={18}/></a>}
-              {member.linkedinLink && <a href={member.linkedinLink} target="_blank" className="p-2 hover:bg-secondary/20 rounded-lg"><Linkedin size={18}/></a>}
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {member.description}
+            </p>
+
+            <div className="text-sm space-y-1">
+
+              {member.activeEmail && (
+                <div className="flex gap-2 items-center">
+                  <Mail size={14}/> {member.activeEmail}
+                </div>
+              )}
+
+              {member.activePhone && (
+                <div className="flex gap-2 items-center">
+                  <Phone size={14}/> {member.activePhone}
+                </div>
+              )}
+
             </div>
 
             <div className="flex gap-2">
-              <button onClick={() => handleEdit(member)} className="flex-1 py-2 px-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors font-medium text-sm flex items-center justify-center gap-2"><Edit size={16}/> Edit</button>
-              <button onClick={() => handleDelete(member.id)} className="flex-1 py-2 px-3 bg-destructive/20 text-destructive rounded-lg hover:bg-destructive/30 transition-colors font-medium text-sm flex items-center justify-center gap-2"><Trash2 size={16}/> Delete</button>
-              <button onClick={()=>setSelectedMember(member)} className="flex-1 py-2 px-3 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 flex items-center justify-center gap-2"><Eye size={16}/> View</button>
+
+              <button
+                onClick={()=>handleEdit(member)}
+                className="flex-1 bg-primary/20 text-primary py-2 rounded"
+              >
+                <Edit size={16}/>
+              </button>
+
+              <button
+                onClick={()=>handleDelete(member.id)}
+                className="flex-1 bg-destructive/20 text-destructive py-2 rounded"
+              >
+                <Trash2 size={16}/>
+              </button>
+
+              <button
+                onClick={()=>setSelectedMember(member)}
+                className="flex-1 bg-blue-100 text-blue-600 py-2 rounded"
+              >
+                <Eye size={16}/>
+              </button>
+
             </div>
+
           </div>
+
         ))}
+
       </div>
 
-      {/* View Modal */}
+      {/* VIEW DIALOG */}
+
       {selectedMember && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-4">{selectedMember.name}</h2>
-            <div className="space-y-4">
-              {selectedMember.image && <img src={selectedMember.image} className="w-32 h-32 rounded-full mb-4 object-cover" />}
-              <p><strong>Description:</strong> {selectedMember.description}</p>
-              <p><strong>Email:</strong> {selectedMember.activeEmail}</p>
-              <p><strong>Phone:</strong> {selectedMember.activePhone}</p>
-              <p><strong>Role:</strong> {selectedMember.mainRole}</p>
-              <div className="flex gap-2 mt-2">
-                {selectedMember.githubLink && <a href={selectedMember.githubLink} target="_blank"><Github size={20}/></a>}
-                {selectedMember.twitterLink && <a href={selectedMember.twitterLink} target="_blank"><Twitter size={20}/></a>}
-                {selectedMember.linkedinLink && <a href={selectedMember.linkedinLink} target="_blank"><Linkedin size={20}/></a>}
-              </div>
-            </div>
-            <button onClick={()=>setSelectedMember(null)} className="mt-6 w-full py-2 bg-secondary/20 hover:bg-secondary/30 rounded-lg font-semibold">Close</button>
+
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+          <div className="bg-card p-8 rounded-xl max-w-xl w-full space-y-4">
+
+            <h2 className="text-2xl font-bold">
+              {selectedMember.name}
+            </h2>
+
+            {selectedMember.image && (
+              <img
+                src={selectedMember.image}
+                className="w-32 h-32 rounded-full object-cover"
+              />
+            )}
+
+            {/* FULL DESCRIPTION */}
+
+            <p>{selectedMember.description}</p>
+
+            <p><b>Email:</b> {selectedMember.activeEmail}</p>
+            <p><b>Phone:</b> {selectedMember.activePhone}</p>
+            <p><b>Main Role:</b> {selectedMember.mainRole}</p>
+
+            <button
+              onClick={()=>setSelectedMember(null)}
+              className="w-full py-2 bg-secondary rounded"
+            >
+              Close
+            </button>
+
           </div>
+
         </div>
+
       )}
 
-      {/* Add/Edit Modal */}
+      {/* ADD / EDIT DIALOG */}
+
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-6">{editingId ? "Edit Team Member" : "Add Team Member"}</h2>
+
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+          <div className="bg-card p-8 rounded-xl max-w-2xl w-full overflow-y-auto max-h-[90vh]">
+
+            <h2 className="text-2xl font-bold mb-6">
+              {editingId ? "Edit Member" : "Add Member"}
+            </h2>
+
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
-                <input type="text" required className="w-full px-4 py-2 rounded-lg border" value={formData.name} onChange={(e)=>setFormData({...formData,name:e.target.value})} />
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <input type="text" className="w-full px-4 py-2 rounded-lg border" value={formData.description} onChange={(e)=>setFormData({...formData,description:e.target.value})} />
-              </div>
+              <input
+                required
+                placeholder="Full name"
+                className="w-full border p-2 rounded"
+                value={formData.name}
+                onChange={(e)=>setFormData({...formData,name:e.target.value})}
+              />
+
+              <textarea
+                placeholder="Description"
+                className="w-full border p-2 rounded"
+                value={formData.description}
+                onChange={(e)=>setFormData({...formData,description:e.target.value})}
+              />
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
-                  <input type="email" className="w-full px-4 py-2 rounded-lg border" value={formData.activeEmail} onChange={(e)=>setFormData({...formData,activeEmail:e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Phone</label>
-                  <input type="tel" className="w-full px-4 py-2 rounded-lg border" value={formData.activePhone} onChange={(e)=>setFormData({...formData,activePhone:e.target.value})} />
-                </div>
+
+                <input
+                  placeholder="Email"
+                  className="border p-2 rounded"
+                  value={formData.activeEmail}
+                  onChange={(e)=>setFormData({...formData,activeEmail:e.target.value})}
+                />
+
+                <input
+                  placeholder="Phone"
+                  className="border p-2 rounded"
+                  value={formData.activePhone}
+                  onChange={(e)=>setFormData({...formData,activePhone:e.target.value})}
+                />
+
               </div>
+
+              {/* MAIN ROLE */}
+
+              <select
+                className="border p-2 rounded w-full"
+                value={formData.mainRole}
+                onChange={(e)=>setFormData({...formData,mainRole:e.target.value})}
+              >
+                <option value="admin">Admin</option>
+                <option value="member">Member</option>
+              </select>
+
+              {/* MULTI ROLE SELECT */}
 
               <div>
-                <label className="block text-sm font-medium mb-2">Role</label>
-                <select className="w-full px-4 py-2 rounded-lg border" value={formData.mainRole} onChange={(e)=>setFormData({...formData,mainRole:e.target.value})}>
-                  <option value="admin">Admin</option>
-                  <option value="designer">Designer</option>
-                  <option value="developer">Developer</option>
-                  <option value="manager">Manager</option>
-                  <option value="member">Member</option>
-                </select>
+
+                <p className="font-medium mb-2">Roles</p>
+
+                <div className="flex flex-wrap gap-2">
+
+                  {roles.map(role => (
+
+                    <button
+                      type="button"
+                      key={role.id}
+                      onClick={()=>toggleRole(role.id)}
+                      className={`px-3 py-1 rounded border
+                        ${formData.roleIds.includes(role.id)
+                        ? "bg-primary text-white"
+                        : "bg-muted"}
+                      `}
+                    >
+                      {role.name}
+                    </button>
+
+                  ))}
+
+                </div>
+
               </div>
 
-              {/* Social Links */}
-              <div className="grid grid-cols-2 gap-4">
-                <input type="url" placeholder="GitHub Link" className="w-full px-4 py-2 rounded-lg border" value={formData.githubLink} onChange={e=>setFormData({...formData,githubLink:e.target.value})} />
-                <input type="url" placeholder="Twitter Link" className="w-full px-4 py-2 rounded-lg border" value={formData.twitterLink} onChange={e=>setFormData({...formData,twitterLink:e.target.value})} />
-                <input type="url" placeholder="LinkedIn Link" className="w-full px-4 py-2 rounded-lg border" value={formData.linkedinLink} onChange={e=>setFormData({...formData,linkedinLink:e.target.value})} />
-                <input type="url" placeholder="Instagram Link" className="w-full px-4 py-2 rounded-lg border" value={formData.instagramLink} onChange={e=>setFormData({...formData,instagramLink:e.target.value})} />
-                <input type="url" placeholder="Website Link" className="w-full px-4 py-2 rounded-lg border" value={formData.websiteLink} onChange={e=>setFormData({...formData,websiteLink:e.target.value})} />
+              <ImageUpload
+                value={formData.image || null}
+                onChange={(url)=>setFormData({...formData,image:url || ''})}
+              />
+
+              <div className="flex justify-end gap-3 pt-4">
+
+                <button
+                  type="button"
+                  onClick={()=>setIsOpen(false)}
+                  className="px-5 py-2 bg-muted rounded"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-primary text-white rounded"
+                >
+                  {editingId ? "Update" : "Add"}
+                </button>
+
               </div>
 
-              {/* Image Upload */}
-              <div>
-                <label className="block text-sm font-medium mb-2">Profile Image</label>
-                <ImageUpload value={formData.image || null} onChange={url=>setFormData({...formData,image:url || ''})} />
-              </div>
-
-              <div className="flex justify-end gap-2 mt-6">
-                <button type="button" className="px-6 py-2 bg-secondary/20 rounded-lg" onClick={()=>{setIsOpen(false); setEditingId(null)}}>Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-primary-foreground rounded-lg">{editingId ? "Update" : "Add"} Member</button>
-              </div>
             </form>
+
           </div>
+
         </div>
+
       )}
+
     </div>
   )
 }
