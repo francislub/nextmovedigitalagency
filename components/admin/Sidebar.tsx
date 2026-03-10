@@ -22,6 +22,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
   { icon: Mail, label: 'Contact Forms', href: '/admin/contacts' },
   { icon: Calendar, label: 'Consultations', href: '/admin/consultations' },
+  { icon: Mail, label: 'Roles', href: '/admin/roles' },
   { icon: Users, label: 'Team Members', href: '/admin/team' },
   { icon: MessageSquare, label: 'Subscribers', href: '/admin/subscribers' },
   // { icon: Settings, label: 'Settings', href: '/admin/settings' },
